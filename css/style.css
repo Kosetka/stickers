@@ -1,0 +1,114 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background-color: #eee;
+}
+
+.navbar {
+	border-radius: 0;
+}
+
+.form-signin {
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+	margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+	font-weight: normal;
+}
+
+.form-signin .form-control {
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+}
+
+.form-signin .form-control:focus {
+	z-index: 2;
+}
+
+.form-signin input[type="login"] {
+	margin-bottom: -1px;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+	margin-bottom: 10px;
+	border-top-left-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.text-center .tname {
+	text-align: left;
+	margin-bottom: 20px;
+	margin-top: 50px;
+}
+
+textarea {
+	padding: 5px;
+}
+
+table {
+	overflow: hidden;
+}
+
+tr:hover {
+	background-color: #d8d8d8;
+}
+
+td,
+th {
+	position: relative;
+}
+
+
+td:hover::after,
+th:hover::after {
+	content: "";
+	position: absolute;
+	background-color: #d8d8d8;
+	left: 0;
+	top: -5000px;
+	height: 10000px;
+	width: 100%;
+	z-index: -2;
+}
+th > a {
+	color: #000000;
+}
+.equal2::after {
+	content: "";
+	position: absolute;
+	background-color: #f5e78e;
+	left: -5000px;
+	top: 0;
+	height: 100%;
+	width: 10000px;
+	z-index: -3;
+}
+
+.more {
+	background-color: #8ef5b2;
+}
+
+.less {
+	background-color: #f58e8e;
+}
+
+.equal {
+	background-color: #f5e78e;
+}

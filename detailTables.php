@@ -1,0 +1,173 @@
+<?php 
+defined('inc') or header('Location: index.php');
+$db = getDB();
+
+if(isset($_POST['depSend'])) {
+	$departID = $_POST['department'];
+	if($departID<>"all") $departID = getSingleValue("firewall","tag",$departID,"id");
+} else {
+	$departID = "all";
+}
+?>
+<h2>Raport szczegółowy<?php if(isset($departName)) echo ' - '.$departName; ?>:</h2>
+
+<?php
+$statement = $db->prepare("SELECT * FROM types");
+$statement->execute();
+foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
+	$arr = [];
+?>
+<p class="lead tname"><?php echo "[".$typeName['tag']."] ".$typeName['name'];?></p>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th>lp.</th>
+			<th>Nazwa</th>
+			<?php
+				if($departID=="all") echo'<th>Oddział</th>';
+	try {
+		$typeID = $typeName['id'];
+		$statement2 = $db->prepare("SELECT * FROM fields WHERE type_id = :typeID");
+		$statement2->bindParam(':typeID',$typeID); 
+		$statement2->execute();
+		foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $thead) {
+			echo '<th>'.$thead["title"].'</th>';
+			$arr[] = $thead['name'];
+		}
+	} catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+			?>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+		<?php
+	try {
+		$ttname = "%".$typeName['tag']."%";
+		$db = getDB();
+		$statement = $db->prepare("SELECT DISTINCT name FROM fieldvalue WHERE name LIKE :name");
+		$statement->bindParam(':name',$ttname); 
+		$statement->execute();
+		$j = 1;
+		$count = $statement->rowCount();
+		foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+			$rname = $row['name'];
+			$rid = $typeName['id'];
+		?>
+		<tr>
+			
+				<?php 
+			if($departID<>"all") { // raport oddział
+				$stmt = $db->prepare("SELECT * FROM scan WHERE name = :name ORDER BY date DESC LIMIT 1");
+				$stmt->bindParam(':name',$rname); 
+				$stmt->execute();
+				$depid = $stmt->fetch();
+				$depid = $depid['department'];
+				if($departID==$depid) {
+					?>
+					<td><?php echo $j++; ?></td>
+					<td style="text-transform: uppercase;"><?php echo $rname; ?></td>
+				<?php
+					
+					foreach($arr as $a) {
+						$statement2 = $db->prepare("SELECT value FROM fieldvalue WHERE name LIKE :name AND fieldname = :fname ORDER BY date DESC LIMIT 1");
+						$statement2->bindParam(':name',$rname); 
+						$statement2->bindParam(':fname',$a); 
+						$statement2->execute();
+						$f = $statement2->fetch();
+						$result = $f['value'];
+						echo '<td>'.$result.'</td>';
+					}
+					$q = $db->prepare("SELECT status FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
+					$q->bindParam(':name',$rname); 
+					$q->execute();
+					$f = $q->fetch();
+					$result = $f['status'];
+					$statement3 = $db->prepare("SELECT * FROM status WHERE name LIKE :name ORDER BY date DESC LIMIT 2");
+					$statement3->bindParam(':name',$rname);
+					$statement3->execute();
+					$i = 1;
+					$d = [];
+					$s = [];
+					$class = "";
+					foreach ($statement3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+						$d[$i] = $row2['date'];
+						$s[$i] = $row2['status'];
+						$i++;
+					}
+					if(isset($s[2]) && $s[2]<>$s[1]) {
+						if($i>2) {
+							$datetime1 = new DateTime($d[2]);
+							$datetime2  = new DateTime($d[1]);
+							$interval = $datetime1->diff($datetime2);
+							if($interval->format('%a days')<=30) $class='class="equal2"';
+						}
+					}
+					echo '<td '.$class.'>'.$statuses[$result].'</td>';
+					
+				}
+				
+			} else {
+				$stmt = $db->prepare("SELECT * FROM scan WHERE name = :name ORDER BY date DESC LIMIT 1");
+				$stmt->bindParam(':name',$rname); 
+				$stmt->execute();
+				$depid = $stmt->fetch();
+				$depid = $depid['department'];	
+			?>
+			<td><?php echo $j++; ?></td>
+			<td style="text-transform: uppercase;"><?php echo $rname; ?></td>
+			<?php
+				echo '<td title="'.getSingleValue("firewall","id",$depid,"name").'">'.getSingleValue("firewall","id",$depid,"tag").'</td>';
+				foreach($arr as $a) {
+					$statement2 = $db->prepare("SELECT value FROM fieldvalue WHERE name LIKE :name AND fieldname = :fname ORDER BY date DESC LIMIT 1");
+					$statement2->bindParam(':name',$rname); 
+					$statement2->bindParam(':fname',$a); 
+					$statement2->execute();
+					$f = $statement2->fetch();
+					$result = $f['value'];
+					echo '<td>'.$result.'</td>';
+				}
+				$q = $db->prepare("SELECT status FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
+				$q->bindParam(':name',$rname); 
+				$q->execute();
+				$f = $q->fetch();
+				$result = $f['status'];
+				$statement3 = $db->prepare("SELECT * FROM status WHERE name LIKE :name ORDER BY date DESC LIMIT 2");
+				$statement3->bindParam(':name',$rname);
+				$statement3->execute();
+				$i = 1;
+				$d = [];
+				$s = [];
+				$class = "";
+				foreach ($statement3->fetchAll(PDO::FETCH_ASSOC) as $row2) {
+					$d[$i] = $row2['date'];
+					$s[$i] = $row2['status'];
+					$i++;
+				}
+				if(isset($s[2]) && $s[2]<>$s[1]) {
+					if($i>2) {
+						$datetime1 = new DateTime($d[2]);
+						$datetime2  = new DateTime($d[1]);
+						$interval = $datetime1->diff($datetime2);
+						if($interval->format('%a days')<=30) $class='class="equal2"';
+					}
+				}
+				echo '<td '.$class.'>'.$statuses[$result].'</td>';
+
+			}
+			
+			?>
+			
+		</tr>
+		<?php
+		}
+	} catch(PDOException $e) {
+		echo $e->getMessage();
+	}
+		?>
+	</tbody>
+</table>
+<?php 
+}
+?>
