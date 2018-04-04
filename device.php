@@ -22,12 +22,31 @@
 		?>
 		<div class="container" style="margin-top:50px">
 			<div class="text-center">
+				<div class="row">
+					<div class="col-sm-4">
 				<?php
 					if(isset($_GET['id']) && !empty($_GET['id'])) {
 						$deviceID = secure($_GET['id']);
 						$iID = substr($deviceID, 2);     // wycina dwie pierwsze
 						$gID = substr($deviceID, 0, 2);  // zwraca dwie pierwsze
 						if(tagExists($gID)) {
+							if(isset($_POST["commSend"])) {
+								$today = date("Y-m-d H:i:s");
+								$uid = getSingleValue("users","username",$_SESSION["username"],"id");
+								$content = secure($_POST["comment"]);
+								$devLink = $_POST['link'];
+								$db = getDB();
+								$statement = $db->prepare("INSERT INTO comments(did, uid, date, content, link) VALUES(:did, :uid, :date, :content, :link)");
+								$statement->execute(array(
+									"did" => $deviceID,
+									"uid" => $uid,
+									"date" => $today,
+									"link" => $devLink,
+									"content" => $content
+								));
+								$message2 = showMessage(0,"Komentarz został dodany.");
+								unset($_POST["commSend"]);
+							}
 							if(!deviceExists($gID, true) && !isset($_POST['editSend'])) { 	 // nie ma takiego tagu sprzetu
 								//sam tag gdy nie ma żadnego sprzętu
 								require('deviceAdd.php'); 
@@ -92,6 +111,68 @@
 						} else {
 							redirect('index.php');				
 						}
+					?>
+					</div>
+					<div class="col-sm-8">
+						<h2>Dodaj komentarz:</h2>
+						<?php 
+							if(isset($message2)) {  
+								echo $message2;  
+							}  
+						?>
+						<form class="form-horizontal" action="" method="POST">
+							<div class="form-group"> 
+								<label class="control-label col-sm-2" for="comment">Treść:</label>
+								<div class="col-sm-9" style="text-align: left;">
+									<textarea class="form-control" name="comment" id="comment" required style="min-width: 100%; max-width: 100%; min-height: 60px;"></textarea>
+								</div>
+							</div>
+							<div class="form-group"> 
+								<label class="control-label col-sm-2" for="link">Link do zdjęcia:</label>
+								<div class="col-sm-9" style="text-align: left;">
+									<input class="form-control" name="link" id="link">
+								</div>
+							</div>
+							<div class="form-group">        
+								<div class="col-sm-offset-5 col-sm-2">
+									<input type="submit" name="commSend" class="btn btn-primary" value="Wyślij" />
+								</div>
+							</div>
+						</form>
+						
+						
+						<h2>Komentarze:</h2>
+						<div class="col-sm-12" style="text-align: left;">
+							<?php
+								$db = getDB();
+								$stmt = $db->prepare("SELECT * FROM comments WHERE did = :did ORDER BY date DESC");
+								$stmt->bindParam(':did',$deviceID); 
+								$stmt->execute();
+								foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $comm) {
+									$user = getSingleValue("users","id",$comm["uid"],"name");
+									echo '<div class="col-sm-12">
+													<div class="panel panel-default">
+														<div class="panel-heading">
+															<strong>'.$user.'</strong> <span class="text-muted">Data: '.$comm["date"].'</span>
+														</div>
+														<div class="panel-body">
+															'.secure($comm["content"]).'
+														</div>';
+									if($comm["link"]<>"") {
+										echo '	<div class="panel-footer">
+															<a href="'.$comm["link"].'">Zdjęcie</a>
+														</div>';
+									}
+														
+									echo '	</div>
+												</div>';
+								}
+							?>
+					
+					</div>
+				</div>
+					<?php
+						
 					} else {
 						require('showTables.php'); //brak POST i GET
 					}

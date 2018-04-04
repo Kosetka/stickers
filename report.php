@@ -30,46 +30,78 @@
 		
 		?>
 		<div class="container" style="margin-top:50px">
-
 			<div class="text-center">
-				<h2>Raport ewidencji: <?php if(isset ($reportSend)) echo $_POST["dstart"].' - '.$_POST["dend"]; ?></h2>
+				<h2>Raport ewidencji: <?php if(isset($reportSend)) echo $_POST["dstart"].' - '.$_POST["dend"]; ?></h2>
 			</div>
-			<form class="form-horizontal" action="" method="POST">
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="dstart">Data od:</label>
-					<div class="col-sm-2">          
-						<input type="date" class="form-control" id="dstart" placeholder="" value="<?php if(isset($reportSend)) echo $_POST['dstart']; else echo date('Y-m-').'01';?>" name="dstart" required>
-					</div>
+			<div class="row">
+				<div class="col-sm-4">
+					<h4>Kryteria:</h4>
+					<form class="form-horizontal" action="" method="POST">
+						<div class="form-group">
+							<label class="control-label col-sm-3" for="dstart">Data od:</label>
+							<div class="col-sm-9">          
+								<input type="date" class="form-control" id="dstart" placeholder="" value="<?php if(isset($reportSend)) echo $_POST['dstart']; else echo date('Y-m-').'01';?>" name="dstart" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3" for="dend">Data do:</label>
+							<div class="col-sm-9">          
+								<input type="date" class="form-control" id="dend" placeholder="" value="<?php if(isset($reportSend)) echo $_POST['dend'];else echo date('Y-m-d');?>" name="dend" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-sm-3" for="department">Oddział:</label>
+							<div class="col-sm-9"> 
+								<select class="form-control" name="department" id="department" required>
+									<option value="all" selected>Wszystkie</option>
+									<?php
+										$db = getDB();
+										$statement2 = $db->prepare("SELECT * FROM firewall");
+										$statement2->execute();
+
+										foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $value) {
+											echo '<option value="'.$value["tag"].'">'.$value["name"].'</option>';
+										}
+									?>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">        
+							<div class="col-sm-offset-5 col-sm-2">
+								<input type="submit" name="dateSend" class="btn btn-primary" value="Pokaż" />
+							</div>
+						</div>
+					</form>
+				
 				</div>
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="dend">Data do:</label>
-					<div class="col-sm-2">          
-						<input type="date" class="form-control" id="dend" placeholder="" value="<?php if(isset($reportSend)) echo $_POST['dend'];else echo date('Y-m-d');?>" name="dend" required>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-sm-2" for="department">Oddział:</label>
-					<div class="col-sm-2"> 
-						<select class="form-control" name="department" id="department" required>
-							<option value="all" selected>Wszystkie</option>
-							<?php
-								$db = getDB();
-								$statement2 = $db->prepare("SELECT * FROM firewall");
-								$statement2->execute();
+				<div class="col-sm-8">
+					<h4>Skróty oddziałów:</h4>
+					<table class="table table-bordered">
+						<thead></thead>
+						<tbody>
+						<?php
+							$db = getDB();
+							$statement = $db->prepare("SELECT * FROM firewall");
+							$statement->execute();
+							$i = 1;
+							foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $fw) {
+								if($i==1) echo "<tr>";
+								echo "<th>".$fw['tag']."</th>";
+								echo "<td>".$fw['name']."</td>";
+								if($i==5) echo "</tr>";
+								$i++;
+								if($i==5) $i = 1;
+							}
 							
-								foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $value) {
-									echo '<option value="'.$value["tag"].'">'.$value["name"].'</option>';
-								}
-							?>
-						</select>
-					</div>
+						?>
+						</tbody>
+					</table>
+					<p>Pierwsza liczba przy oddziale oznacza ilość urządzeń, druga ilość stanowisk.</p>
+					<p>Jeżeli komputerów jest więcej niż stanowisk tło jest <span style="color: green; font-weight: bold;">zielone</span>, tyle samo - <span style="color: goldenrod; font-weight: bold;">żółte</span>, komputerów jest za mało - <span style="color: red; font-weight: bold;">czerwone</span>.</p>
+					<p>W przypadku Magazynu <b>MGN</b> kolor <span style="color: green; font-weight: bold;">zielony</span> oznacza liczbę urządzeń sprawnych, a <span style="color: red; font-weight: bold;">czerwony</span> zepsutych.</p>
 				</div>
-				<div class="form-group">        
-					<div class="col-sm-offset-2 col-sm-2">
-						<input type="submit" name="dateSend" class="btn btn-primary" value="Pokaż" />
-					</div>
-				</div>
-			</form>
+			
+			</div>
 			<?php  
 				if(isset($message)) {  
 					echo $message;  
@@ -82,7 +114,6 @@
 					<tr>
 						<th>Urządzenie</th>
 						<?php
-							$db = getDB();
 							if($department=="all") 
 								$statement = $db->prepare("SELECT * FROM firewall");
 							else {

@@ -5,7 +5,8 @@
 
 
 	if(isset($_POST["scanSend"])) {
-		$name = $_POST["name"];
+		$name = strtoupper($_POST["name"]);
+		
 		if(statusExists($name)) {
 			$userID = getSingleValue("users","username",$_SESSION["username"],"id");
 			$today = date("Y-m-d H:i:s");

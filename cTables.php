@@ -5,7 +5,7 @@ $db = getDB();
 if(isset($_POST['depSend'])) {
 	$departID = $_POST['department'];
 	if($departID<>"all") $departID = getSingleValue("firewall","tag",$departID,"id");
-} 
+} else { $departID = "all"; }
 ?>
 
 <?php

@@ -11,7 +11,6 @@
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Dodaj
 					<span class="caret"></span></a>
 				<ul class="dropdown-menu">
-					<li><a href="add.php">Urządzenie</a></li>
 					<li><a href="type.php">Typ urządzeń</a></li>
 					<li><a href="department.php">Oddział</a></li>
 				</ul>
@@ -24,6 +23,8 @@
 					<li><a href="report.php">Ewidencji</a></li>
 					<li><a href="details.php">Szczegółowy</a></li>
 					<li><a href="rotate.php">Rotacji sprzętu</a></li>
+					<li><a href="count.php">Ilość sprzętu</a></li>
+					<!---<li><a href="sip.php">Numery kolejek</a></li>-->
 				</ul>
 			</li>
 		</ul>

@@ -87,8 +87,9 @@ th:hover::after {
 	width: 100%;
 	z-index: -2;
 }
-th > a {
+table a {
 	color: #000000;
+	font-weight: bold;
 }
 .equal2::after {
 	content: "";
@@ -112,3 +113,6 @@ th > a {
 .equal {
 	background-color: #f5e78e;
 }
+
+
+

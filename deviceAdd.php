@@ -4,7 +4,7 @@
 ?>
 <h2>Urządzenie: <?php echo $deviceID; ?></h2>
 
-<div class="col-sm-6 col-sm-offset-3">
+<div class="col-sm-12">
 <?php 
 	if(isset($message)) {  
 		echo $message;  
@@ -19,8 +19,8 @@
 	foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 		?>
 		<div class="form-group">
-			<label class="control-label col-sm-offset-1 col-sm-4" for="<?php echo $row['name']?>"><?php echo $row['title'];?>:</label>
-			<div class="col-sm-5" style="text-align: left;">
+			<label class="control-label col-sm-3" for="<?php echo $row['name']?>"><?php echo $row['title'];?>:</label>
+			<div class="col-sm-9" style="text-align: left;">
 			<?php
 				$result = getFieldValue($deviceID,$row['name']);
 				switch ($row['field_type']) {
@@ -70,8 +70,8 @@
 	<h2>Zmiana statusu:</h2>
 	<form class="form-horizontal" action="" method="POST">
 		<div class="form-group"> 
-			<label class="control-label col-sm-offset-1 col-sm-4" for="status">Status:</label>
-			<div class="col-sm-5" style="text-align: left;">
+			<label class="control-label col-sm-3" for="status">Status:</label>
+			<div class="col-sm-9" style="text-align: left;">
 				<select class="form-control" name="status" id="status">
 					<?php
 						$statement2 = $db->prepare("SELECT * FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");

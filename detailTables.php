@@ -8,10 +8,6 @@ if(isset($_POST['depSend'])) {
 } else {
 	$departID = "all";
 }
-?>
-<h2>Raport szczegółowy<?php if(isset($departName)) echo ' - '.$departName; ?>:</h2>
-
-<?php
 $statement = $db->prepare("SELECT * FROM types");
 $statement->execute();
 foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
@@ -39,6 +35,8 @@ foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
 	}
 			?>
 			<th>Status</th>
+			<th>Komentarze</th>
+			<th>Historia</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -105,6 +103,9 @@ foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
 						}
 					}
 					echo '<td '.$class.'>'.$statuses[$result].'</td>';
+					echo '<td><a title="Komentarze" href="comments.php?id='.$rname.'"><span class="glyphicon glyphicon-comment"></span></a></td>';
+					echo '<td><a title="Historia" href="history.php?id='.$rname.'"><span class="glyphicon glyphicon-calendar"></span></a></td>';
+					
 					
 				}
 				
@@ -116,7 +117,7 @@ foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
 				$depid = $depid['department'];	
 			?>
 			<td><?php echo $j++; ?></td>
-			<td style="text-transform: uppercase;"><?php echo $rname; ?></td>
+			<td style="text-transform: uppercase;"><a href="device.php?id=<?php echo $rname; ?>"><?php echo $rname; ?></a></td>
 			<?php
 				echo '<td title="'.getSingleValue("firewall","id",$depid,"name").'">'.getSingleValue("firewall","id",$depid,"tag").'</td>';
 				foreach($arr as $a) {
@@ -154,11 +155,17 @@ foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
 					}
 				}
 				echo '<td '.$class.'>'.$statuses[$result].'</td>';
+				$stmt = $db->prepare("SELECT COUNT(*) FROM comments WHERE did = '$rname'");
+				$stmt->execute();
+				$ccom = $stmt->fetchColumn(); 
+				$ccom = " (".$ccom.")";
+				echo '<td><a title="Komentarze" href="comments.php?id='.$rname.'"><span class="glyphicon glyphicon-comment"></span>'.$ccom.'</a></td>';
+				
+				echo '<td><a title="Historia" href="history.php?id='.$rname.'"><span class="glyphicon glyphicon-calendar"></span></a></td>';
 
 			}
 			
 			?>
-			
 		</tr>
 		<?php
 		}

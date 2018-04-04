@@ -2,16 +2,11 @@
 	include("config.php"); 
 	if(!checkFirewall()) redirect('error.php');
 	if(!loggedin()) redirect('index.php');
-
-
-	if(isset($_POST['depSend'])) {
-		$department = $_POST['department'];
-	}
 ?>  
 <!DOCTYPE html>
 <html lang="pl">
 	<head>
-		<title></title>
+		<title>SIP</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
@@ -23,11 +18,11 @@
 		?>
 
 		<div class="container" style="margin-top:50px">
-			<h2 class="text-center">Raport ilości sprzętu:</h2>
+			<h2 class="text-center">Raport numerów kolejek:</h2>
 			<?php
-				if(isset($message)) {
-					echo showMessage(0,$message);
-				}
+			if(isset($message)) {
+				echo showMessage(0,$message);
+			}
 			?>
 			<div class="row">
 				<h4>Kryteria:</h4>
@@ -63,8 +58,9 @@
 					</form>
 				</div>
 			</div>
+			
 			<?php
-				require("cTables.php");
+			//require("cTables.php");
 			?>
 
 		</div><!-- /.container -->

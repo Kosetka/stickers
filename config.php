@@ -6,15 +6,24 @@
 	define('DB_PASSWORD', '');
 	define('DB_DATABASE', 'scan');
 	define('inc', 'true');
+	define('testVersion', 'true'); //false
 	
 	$statuses = [1=>"Sprawny", 2=>"Zepsuty", 3=>"Serwis"];
-
-	if(!isset($_SESSION["department"])) {
-		$ip = $_SERVER['REMOTE_ADDR'];
-		$departmentSelected = getSingleValue("firewall", "ip", $ip, "id");
-		$_SESSION["department"] = $departmentSelected;
+	
+	if(testVersion==false) {
+		if(!isset($_SESSION["department"])) {
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$departmentSelected = getSingleValue("firewall", "ip", $ip, "id");
+			$_SESSION["department"] = $departmentSelected;
+		} else {
+			$departmentSelected = $_SESSION["department"];
+		}
 	} else {
-		$departmentSelected = $_SESSION["department"];
+		if(!isset($_SESSION["department"])) {
+			$departmentSelected = 16;
+		} else {
+			$departmentSelected = $_SESSION["department"];
+		}
 	}
 
 	function getDB() {
@@ -63,7 +72,11 @@
 			return true;
 			//echo 'Twoje ip: '.$ip; 
 		} else {
-			return false;
+			if(testVersion==true) {
+				return true;	
+			} else {
+				return false; //false
+			}
 		}
 	}
 
@@ -82,7 +95,8 @@
 			$result = $statement->fetch(); 
 			return $result['name'];
 		} else {  
-			die('Zła lokalizacja.'); 
+			return true;
+			//die('Zła lokalizacja.'); 
 		}
 	}
 
