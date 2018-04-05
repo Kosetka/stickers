@@ -4,9 +4,9 @@
 	define('DB_SERVER', 'localhost');
 	define('DB_USERNAME', 'root');
 	define('DB_PASSWORD', '');
-	define('DB_DATABASE', 'scan');
+	define('DB_DATABASE', 'stickers');
 	define('inc', 'true');
-	define('testVersion', 'true'); //false
+	define('testVersion', 'false'); //false
 	
 	$statuses = [1=>"Sprawny", 2=>"Zepsuty", 3=>"Serwis"];
 	
