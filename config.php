@@ -81,7 +81,7 @@
 	}
 
 	function secure($value) {
-		return mysql_real_escape_string($value);
+		return stripslashes($value);
 	}
 
 	function getDepartment($id) {
