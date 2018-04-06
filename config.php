@@ -1,10 +1,10 @@
 <?php
 	session_start();
 	/* DATABASE CONFIGURATION */
-	define('DB_SERVER', '10.200.39.50');
-	define('DB_USERNAME', 'stickers');
-	define('DB_PASSWORD', '356413.stickers');
-	define('DB_DATABASE', 'stickers');
+	define('DB_SERVER', '');
+	define('DB_USERNAME', '');
+	define('DB_PASSWORD', '');
+	define('DB_DATABASE', '');
 	define('inc', 'true');
 	define('testVersion', 'false'); //false
 	
