@@ -24,7 +24,8 @@
 					<li><a href="details.php">Szczegółowy</a></li>
 					<li><a href="rotate.php">Rotacji sprzętu</a></li>
 					<li><a href="count.php">Ilość sprzętu</a></li>
-					<!---<li><a href="sip.php">Numery kolejek</a></li>-->
+					<li><a href="sip.php">Numery kolejek</a></li>
+					<li><a href="routers.php">Dane sieci wifi</a></li>
 				</ul>
 			</li>
 		</ul>

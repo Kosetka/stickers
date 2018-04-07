@@ -11,6 +11,11 @@ if(isset($_POST["depSend"])) {
 		$tag = strtoupper($_POST["tag"]);
 		$ip = $_POST["ip"];
 		$stand = $_POST["stand"];
+		$vncsfrom = $_POST["vncsfrom"];
+		$vncsto = $_POST["vncsto"];
+		$listeningfrom = $_POST["listeningfrom"];
+		$listeningto = $_POST["listeningto"];
+		$instance = $_POST["instance"];
 		$query = "SELECT * FROM firewall WHERE tag = :tag"; 
 		$db = getDB();
 		$statement = $db->prepare($query); 
@@ -19,11 +24,16 @@ if(isset($_POST["depSend"])) {
 		$count = $statement->rowCount();  
 		if($count <= 0) {
 			try {
-				$statement = $db->prepare("INSERT INTO firewall(name, tag, ip, stand) VALUES(:name, :tag, :ip, :stand)");
+				$statement = $db->prepare("INSERT INTO firewall(name, tag, ip, stand, range_from, range_to, listening_from, listening_to, instance) VALUES(:name, :tag, :ip, :stand, :range_from, :range_to, :listening_from, :listening_to, :instance)");
 				$statement->execute(array(
 					"name" => $name,
 					"ip" => $ip,
 					"stand" => $stand,
+					"range_from" => $vncsfrom,
+					"range_to" => $vncsto,
+					"listening_from" => $listeningfrom,
+					"listening_to" => $listeningto,
+					"instance" => $instance,
 					"tag" => $tag
 				));
 				$message = showMessage(0,' Oddział został dodany.');
@@ -55,14 +65,24 @@ if(isset($_GET['id'])) {
 				$tag = strtoupper($_POST["tag"]);
 				$ip = $_POST["ip"];
 				$stand = $_POST["stand"];
+				$vncsfrom = $_POST["vncsfrom"];
+				$vncsto = $_POST["vncsto"];
+				$listeningfrom = $_POST["listeningfrom"];
+				$listeningto = $_POST["listeningto"];
+				$instance = $_POST["instance"];
 				try {
 					$db = getDB();
-					$statement = $db->prepare("UPDATE firewall SET name = :name, tag = :tag, ip = :ip, stand = :stand WHERE id = :id");
+					$statement = $db->prepare("UPDATE firewall SET name = :name, tag = :tag, ip = :ip, range_from = :range_from, range_to = :range_to, listening_from = :listening_from, listening_to = :listening_to, instance = :instance, stand = :stand WHERE id = :id");
 					$statement->execute(array(
 						"name" => $name,
 						"tag" => $tag,
 						"ip" => $ip,
 						"id" => $typeID,
+						"range_from" => $vncsfrom,
+						"range_to" => $vncsto,
+						"listening_from" => $listeningfrom,
+						"listening_to" => $listeningto,
+						"instance" => $instance,
 						"stand" => $stand
 					));
 
@@ -85,6 +105,11 @@ if(isset($_GET['id'])) {
 			$ftag = getSingleValue("firewall", "id", $typeID, "tag");
 			$fip = getSingleValue("firewall", "id", $typeID, "ip");
 			$fstand = getSingleValue("firewall", "id", $typeID, "stand");
+			$vncsfrom = getSingleValue("firewall", "id", $typeID, "range_from");
+			$vncsto = getSingleValue("firewall", "id", $typeID, "range_to");
+			$listeningfrom = getSingleValue("firewall", "id", $typeID, "listening_from");
+			$listeningto = getSingleValue("firewall", "id", $typeID, "listening_to");
+			$instance = getSingleValue("firewall", "id", $typeID, "instance");
 
 		} else {
 			redirect("department.php");
@@ -139,6 +164,36 @@ if(isset($_GET['id'])) {
 						<label class="control-label col-sm-offset-1 col-sm-4" for="stand">Liczba stanowisk:</label>
 						<div class="col-sm-2">          
 							<input type="number" class="form-control" id="stand" placeholder="" name="stand" <?php if(isset($numeric)) echo "value='$fstand'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="vncsfrom">VNCS od:</label>
+						<div class="col-sm-4">          
+							<input type="number" class="form-control" id="vncsfrom" placeholder="" name="vncsfrom" <?php if(isset($numeric)) echo "value='$vncsfrom'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="vncsto">VNCS do:</label>
+						<div class="col-sm-4">          
+							<input type="number" class="form-control" id="vncsto" placeholder="" name="vncsto" <?php if(isset($numeric)) echo "value='$vncsto'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="listeningfrom">Odsłuch od:</label>
+						<div class="col-sm-4">          
+							<input type="number" class="form-control" id="listeningfrom" placeholder="" name="listeningfrom" <?php if(isset($numeric)) echo "value='$listeningfrom'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="listeningto">Odsłuch do:</label>
+						<div class="col-sm-4">          
+							<input type="number" class="form-control" id="listeningto" placeholder="" name="listeningto" <?php if(isset($numeric)) echo "value='$listeningto'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="instance">Instancja:</label>
+						<div class="col-sm-2">          
+							<input type="number" class="form-control" id="instance" placeholder="" name="instance" <?php if(isset($numeric)) echo "value='$instance'"; ?> required>
 						</div>
 					</div>
 					<div class="form-group">        

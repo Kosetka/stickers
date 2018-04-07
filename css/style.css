@@ -115,4 +115,20 @@ table a {
 }
 
 
+.takenFine {
+	background-color: #abfc6e;
+}
+.takenWrong {
+	background-color: #fc856e;
+}
+.takenListeningFine {
+	background-color: #01e8fd;
+}
+.takenListeningWrong {
+	background-color: #c201fd;
+}
+.takenListening {
+	background-color: #d2d0d0;
+}
+
 

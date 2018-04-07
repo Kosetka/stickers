@@ -1,12 +1,12 @@
 <?php  
-	include("config.php"); 
-	if(!checkFirewall()) redirect('error.php');
-	if(!loggedin()) redirect('index.php');
+include("config.php"); 
+if(!checkFirewall()) redirect('error.php');
+if(!loggedin()) redirect('index.php');
 ?>  
 <!DOCTYPE html>
 <html lang="pl">
 	<head>
-		<title>SIP</title>
+		<title>Dane sieci WiFi</title>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
@@ -18,7 +18,7 @@
 		?>
 
 		<div class="container" style="margin-top:50px">
-			<h2 class="text-center">Raport numerów kolejek:</h2>
+			<h2 class="text-center">Dane sieci WiFi:</h2>
 			<?php
 			if(isset($message)) {
 				echo showMessage(0,$message);
@@ -57,33 +57,10 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-sm-8">
-					<h4>Legenda:</h4>
-					<?php
-						if(isset($_POST['depSend'])) {
-							$departID = $_POST['department'];
-							if($departID<>"all") $departID = getSingleValue("firewall","tag",$departID,"id");
-						} else { $departID = "all"; }
-						if($departID<>"all") {
-							?>
-							<p style="text-align: center" class="takenFine">Zajęte numery kolejek przez odpowiedni oddział.</p>
-							<p style="text-align: center" class="takenWrong">Zajęte numery kolejek przez zły oddział.</p>
-							<p style="text-align: center" class="takenListening">Wolne numery kolejek do odsłuchu.</p>
-							<p style="text-align: center" class="takenListeningFine">Zajęte numery kolejek do odsłuchu przez odpowiedni oddział.</p>
-							<p style="text-align: center" class="takenListeningWrong">Zajęte numery kolejek do odsłuchu przez zły oddział.</p>
-							<?php
-						} else {
-							?>
-							<p>Kolorem <span style="color: red; font-weight: bold;">czerwonym</span> oznaczone są urządzenia, których numer kolejki VNCS jest po za zakresem danego oddziału, a <span style="color: goldenrod; font-weight: bold;">żółtym</span> te, które nie były jeszcze skanowane.</p>
-							<?php
-						}
-					?>
-					
-				</div>
 			</div>
-			
+
 			<?php
-				require("sipTables.php");
+			require("wifiTables.php");
 			?>
 
 		</div><!-- /.container -->
