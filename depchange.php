@@ -26,7 +26,7 @@
 		?>
 		<div class="container" style="margin-top: 50px">
 			<div class="text-center">
-				<h2 style="margin-bottom: 50px">Dodawanie nowego typu urządzenia</h2>
+				<h2 style="margin-bottom: 50px">Zmiana oddziału</h2>
 				<?php  
 					if(isset($message)) {  
 						echo $message;  

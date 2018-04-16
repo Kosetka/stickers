@@ -23,9 +23,9 @@
 		<div class="container" style="margin-top:50px">
 			<div class="text-center">
 				<div class="row">
-					<div class="col-sm-4">
 				<?php
 					if(isset($_GET['id']) && !empty($_GET['id'])) {
+					echo '<div class="col-sm-4">';
 						$deviceID = secure($_GET['id']);
 						$iID = substr($deviceID, 2);     // wycina dwie pierwsze
 						$gID = substr($deviceID, 0, 2);  // zwraca dwie pierwsze
@@ -174,6 +174,7 @@
 					<?php
 						
 					} else {
+						echo '<div class="col-sm-12">';
 						require('showTables.php'); //brak POST i GET
 					}
 				?>

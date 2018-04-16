@@ -144,7 +144,6 @@
 							
 							
 							foreach ($depart as $dep) {
-								
 								$statement = $db->prepare("SELECT COUNT(DISTINCT name) FROM scan WHERE department = :dep AND name LIKE :name AND date>= :dstart AND date<= :dend;");
 								$statement->bindParam(':dep',$dep); 
 								$statement->bindParam(':name',$name); 
@@ -153,10 +152,16 @@
 								$statement->execute();
 								$count = $statement->fetchColumn(); 
 								if($dep==16) { // 16 to ID magazynu
+									$stmt = $db->prepare("SELECT DISTINCT name FROM scan WHERE department = 16 AND name LIKE :name AND date>= :dstart AND date<= :dend;");
+									$stmt->bindParam(':name',$name); 
+									$stmt->bindParam(':dstart',$dstart); 
+									$stmt->bindParam(':dend',$dend); 
+									$stmt->execute();
+									$c2 = $stmt->fetchColumn();
 									$working = 0;
 									$nWorking = 0;
 									$statement2 = $db->prepare("SELECT DISTINCT name FROM status WHERE name LIKE :name");
-									$statement2->bindParam(':name',$name); 
+									$statement2->bindParam(':name',$c2); 
 									$statement2->execute();
 									foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $device) {
 										$dd = $device['name'];

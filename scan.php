@@ -27,20 +27,20 @@
 					"department" => $departmentSelected,
 					"date" => $today
 				));
-				$message = showMessage(0,"Urządzenie zeskanowane pomyślnie.");
+				$message = showMessage(0," ".$name." - Urządzenie zeskanowane pomyślnie.");
 				echo "<script>
 							audio = new Audio('sound/success.wav');
 							audio.play();
 						</script>";
 			} else {
-				$message = showMessage(1," Urządzenie było już dzisiaj skanowane.");
+				$message = showMessage(1," ".$name." - Urządzenie było już dzisiaj skanowane.");
 				echo "<script>
 							audio = new Audio('sound/warning.wav');
 							audio.play();
 						</script>";
 			}
 		} else {
-			$message = showMessage(1," Sprzęt nie został jeszcze dodany.");
+			$message = showMessage(1," ".$name." - Sprzęt nie został jeszcze dodany.");
 			echo "<script>
 							audio = new Audio('sound/error.wav');
 							audio.play();
@@ -74,7 +74,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-offset-1 col-sm-4" for="name">Nazwa:</label>
 						<div class="col-sm-3">          
-							<input type="text" class="form-control" id="name" placeholder="" name="name" maxlength="32" required autofocus>
+							<input type="text" class="form-control" style="text-transform: uppercase;" id="name" placeholder="" name="name" maxlength="32" required autofocus>
 						</div>
 					</div>
 					<div class="form-group">        

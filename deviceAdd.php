@@ -26,7 +26,7 @@
 				switch ($row['field_type']) {
 					case 0:	
 					?>
-						<input type="text" class="form-control" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?>>
+						<input type="text" class="form-control" style="text-transform: uppercase;" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?>>
 					<?php
 						break;
 					case 1:

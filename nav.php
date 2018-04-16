@@ -32,7 +32,7 @@
 		<ul class="nav navbar-nav navbar-right">
 			<form class="navbar-form navbar-left" action="device.php">
 				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Szukaj..." name="id">
+					<input type="text" style="text-transform: uppercase;" class="form-control" placeholder="Szukaj..." name="id">
 					<div class="input-group-btn">
 						<button class="btn btn-default" type="submit">
 							<i class="glyphicon glyphicon-search"></i>

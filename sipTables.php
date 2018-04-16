@@ -5,7 +5,7 @@
 	if(isset($_POST['depSend'])) {
 		$departID = $_POST['department'];
 		if($departID<>"all") $departID = getSingleValue("firewall","tag",$departID,"id");
-	} else { $departID = "all"; }
+	} else { $departID = null; }
 
 	function getDep($dname) {
 		$db = getDB();
@@ -14,6 +14,7 @@
 		$result = $f["department"];
 		return $result;
 	}
+if($departID<>null) {
 	$departmentsName = [];
 	$statement = $db->prepare("SELECT * FROM firewall");
 	$statement->execute();
@@ -53,19 +54,27 @@
 
 				$total[$i]["department"] = $departmentsName[$result];
 				$total[$i]["device"] = $row["name"];
+				$devType = substr($row["name"], 0, 2); 
 				if(getDep($row["name"])<>"") {
 					$total[$i]["place"] = $departmentsName[getDep($row["name"])];
 				} else {
 					$total[$i]["place"] = "Brak skanowania";
 				}
 				$total[$i]["vncs"] = $row["value"];
+				if($total[$i]["vncs"]=="") {
+					$total[$i]["department"] = "";
+				}
 				$q = $db->prepare("SELECT * FROM firewall WHERE listening_from <= '$val' AND listening_to >= '$val'");
 				$q->execute();
 				$f = $q->rowCount();
-				if($f>0) 
+				if($f>0 AND $total[$i]["vncs"]<>"") 
 					$result = "TAK";
 				else
 					$result = "";
+				if($devType == "TB" OR $devType == "KA") {
+					if($total[$i]["vncs"]<>"")
+						$result = "TAK";
+				}
 				$total[$i]["listening"] = $result;
 				$i++;
 			}
@@ -80,28 +89,35 @@
 			foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				if($departID == getDep($row["name"])) {
 					$val = $row["value"];
-					$q = $db->prepare("SELECT * FROM firewall WHERE range_from <= '$val' AND listening_to >= '$val'");
-					$q->execute();
-					$f = $q->fetch();
-					$result = $f["id"];
-					$total[$i]["department"] = $departmentsName[$result];
-					$total[$i]["device"] = $row["name"];
-					if(getDep($row["name"])<>"") {
-						$total[$i]["place"] = $departmentsName[getDep($row["name"])];
-					} else {
-						$total[$i]["place"] = "Brak skanowania";
+					if($val<>"") {
+						$q = $db->prepare("SELECT * FROM firewall WHERE range_from <= '$val' AND listening_to >= '$val'");
+						$q->execute();
+						$f = $q->fetch();
+						$result = $f["id"];
+						$total[$i]["department"] = $departmentsName[$result];
+						$total[$i]["device"] = $row["name"];
+						$devType = substr($row["name"], 0, 2); 
+						if(getDep($row["name"])<>"") {
+							$total[$i]["place"] = $departmentsName[getDep($row["name"])];
+						} else {
+							$total[$i]["place"] = "Brak skanowania";
+						}
+						$total[$i]["vncs"] = $row["value"];
+
+						$q = $db->prepare("SELECT * FROM firewall WHERE listening_from <= '$val' AND listening_to >= '$val'");
+						$q->execute();
+						$f = $q->rowCount();
+						if($f>0) 
+							$result = "TAK";
+						else
+							$result = "";
+						if($devType == "TB" OR $devType == "KA") {
+							if($total[$i]["vncs"]<>"")
+								$result = "TAK";
+						}
+						$total[$i]["listening"] = $result;
+						$i++;
 					}
-					$total[$i]["vncs"] = $row["value"];
-					
-					$q = $db->prepare("SELECT * FROM firewall WHERE listening_from <= '$val' AND listening_to >= '$val'");
-					$q->execute();
-					$f = $q->rowCount();
-					if($f>0) 
-						$result = "TAK";
-					else
-						$result = "";
-					$total[$i]["listening"] = $result;
-					$i++;
 				}
 			}
 		}
@@ -145,11 +161,11 @@
 			$statement2->execute();
 			foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $row) {
 				$val = $row["value"];
+					
 				$q = $db->prepare("SELECT * FROM firewall WHERE range_from <= '$val' AND listening_to >= '$val'");
 				$q->execute();
 				$f = $q->fetch();
 				$result = $f["id"];
-
 				if(getDep($row["name"])<>$result) {
 					$taken[$i]["wrong"] = true;
 				} else {
@@ -164,7 +180,7 @@
 				else
 					$result = "";
 				$taken[$i]["listening"] = $result;
-				
+
 				$i++;
 			}
 		}
@@ -184,7 +200,7 @@
 		for($j=0;$j<=$ch;$j++) {
 			echo '<tr>';
 			for($i=0;$i<=19;$i++) {
-				if($n >= $to) {
+				if($n > $to) {
 					break;
 				}
 				foreach($taken as $t) {
@@ -216,4 +232,5 @@
 		}
 		echo '</table>';
 	}
+}
 ?>
