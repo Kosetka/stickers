@@ -1,2 +1,0 @@
-UPDATE `fieldvalue` SET `fieldname`='MYmodel' WHERE `fieldname`='MYmoel' w bazie
-usun¹æ numer seryjny ³adowarek

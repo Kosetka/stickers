@@ -10,10 +10,13 @@
 	
 	$statuses = [1=>"Sprawny", 2=>"Zepsuty", 3=>"Serwis"];
 	
-	if(testVersion==false) {
+	if(testVersion=='false') {
 		if(!isset($_SESSION["department"])) {
 			$ip = $_SERVER['REMOTE_ADDR'];
 			$departmentSelected = getSingleValue("firewall", "ip", $ip, "id");
+			if($departmentSelected=="") {
+				$departmentSelected = 16;
+			}
 			$_SESSION["department"] = $departmentSelected;
 		} else {
 			$departmentSelected = $_SESSION["department"];
