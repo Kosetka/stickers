@@ -8,6 +8,7 @@
 	define('inc', 'true');
 	define('testVersion', 'false'); //false
 	
+
 	$statuses = [1=>"Sprawny", 2=>"Zepsuty", 3=>"Serwis"];
 	
 	if(testVersion=='false') {
