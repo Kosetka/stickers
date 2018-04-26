@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 	session_start();
 	/* DATABASE CONFIGURATION */
 	define('DB_SERVER', '10.200.39.50');
