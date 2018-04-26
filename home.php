@@ -20,18 +20,7 @@
 
 	<div class="container" style="margin-top:50px">
 
-		<div class="starter-template">
-			<h1>Twoje IP:</h1>
-			<p class="lead"><?php echo $ip = $_SERVER['REMOTE_ADDR']; ?></p>
-			<h2>Oddział:</h2>
-			<p class="lead"><?php echo $dNameShow = getSingleValue("firewall", "id", $departmentSelected, "name"); ?></p>
-			<?php 
-				echo '<pre>';
-				print_r($_SERVER);
-				echo '</pre>';
-			?>
-			
-		</div>
+		<div class="starter-template"></div>
 		
 		
 	</div><!-- /.container -->
