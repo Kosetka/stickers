@@ -104,11 +104,58 @@ if($departID <> null) {
 							}
 						}
 						echo '<td '.$class.'>'.$statuses[$result].'</td>';
-						$stmt = $db->prepare("SELECT COUNT(*) FROM comments WHERE did = '$rname'");
-						$stmt->execute();
-						$ccom = $stmt->fetchColumn(); 
-						$ccom = " (".$ccom.")";
-						echo '<td><a title="Komentarze" href="comments.php?id='.$rname.'"><span class="glyphicon glyphicon-comment"></span>'.$ccom.'</a></td>';
+                        $stmt = $db->prepare("SELECT COUNT(*) FROM comments WHERE did = '$rname'");
+                        $stmt->execute();
+                        $ccom = $stmt->fetchColumn(); 
+                        $ccom = " (".$ccom.")";
+                        //echo '<td><a title="Komentarze" href="comments.php?id='.$rname.'"><span class="glyphicon glyphicon-comment"></span>'.$ccom.'</a></td>';
+                ?>
+                <!-- Button trigger modal -->
+                <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#<?php echo $rname;?>">
+                        <span class="glyphicon glyphicon-comment"></span><?php echo $ccom; ?>
+                    </button>
+                </td>
+                <!-- Modal -->
+                <div class="modal fade bd-example-modal-lg" id="<?php echo $rname;?>" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title" id="<?php echo 'ml'.$rname;?>">Komentarze - <?php echo $rname;?></h3>
+                            </div>
+                            <div class="modal-body">
+                                <?php
+                        $t2deviceID = $rname;
+                        $t2stmt = $db->prepare("SELECT * FROM comments WHERE did = :did ORDER BY date DESC");
+                        $t2stmt->bindParam(':did',$t2deviceID); 
+                        $t2stmt->execute();
+                        $t2count = 0;
+                        foreach ($t2stmt->fetchAll(PDO::FETCH_ASSOC) as $t2comm) {
+                            $t2count++;
+                            $t2user = getSingleValue("users","id",$t2comm["uid"],"name");
+                            echo '<div>
+														<div class="panel panel-default">
+															<div class="panel-heading">
+																<strong>'.$t2user.'</strong> <span class="text-muted">Data: '.$t2comm["date"].'</span>
+															</div>
+															<div class="panel-body">
+																'.secure($t2comm["content"]).'
+															</div>
+														</div>
+													</div>';
+                        }
+                        if($t2count==0) {
+                            echo "Brak komentarzy do wyświetlenia.";
+                        }
+                                ?>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
 						echo '<td><a title="Historia" href="history.php?id='.$rname.'"><span class="glyphicon glyphicon-calendar"></span></a></td>';
 
 
