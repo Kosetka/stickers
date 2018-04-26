@@ -27,6 +27,7 @@
 					if(isset($_GET['id']) && !empty($_GET['id'])) {
 					echo '<div class="col-sm-4">';
 						$deviceID = secure($_GET['id']);
+                        $deviceID = strtoupper($deviceID);
 						$iID = substr($deviceID, 2);     // wycina dwie pierwsze
 						$gID = substr($deviceID, 0, 2);  // zwraca dwie pierwsze
 						if(tagExists($gID)) {

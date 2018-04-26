@@ -127,22 +127,27 @@ if($departID<>null) {
 		return $a['vncs'] <=> $b['vncs'];
 	});
 	foreach($total as $t) {
-		if($t["place"] == "Brak skanowania") {
-			$class = "equal";
-		} elseif($t["place"]<>$t["department"]) {
-			$class = "less";
-		} else {
-			$class = "";
-		}
-		echo '<tr class="'.$class.'">';
-		echo '<td>'.$i.'</td>';
-		echo '<td><a href="device.php?id='.$t["device"].'">'.$t["device"].'</a></td>';
-		echo '<td>'.$t["place"].'</td>';
-		echo '<td>'.$t["vncs"].'</td>';
-		echo '<td>'.$t["listening"].'</td>';
-		echo '<td>'.$t["department"].'</td>';
-		echo '</tr>';
-		$i++;
+        if($t["vncs"]=="") {
+            $class = "more";
+        } else {
+            if($t["place"] == "Brak skanowania") {
+                $class = "equal";
+            } elseif($t["place"]<>$t["department"]) {
+                $class = "less";
+            } else {
+                $class = "";
+            }
+        }
+        echo '<tr class="'.$class.'">';
+        echo '<td>'.$i.'</td>';
+        echo '<td style="text-transform: uppercase;"><a href="device.php?id='.$t["device"].'">'.$t["device"].'</a></td>';
+        echo '<td>'.$t["place"].'</td>';
+        echo '<td>'.$t["vncs"].'</td>';
+        echo '<td>'.$t["listening"].'</td>';
+        echo '<td>'.$t["department"].'</td>';
+        echo '</tr>';
+        $i++;
+        
 	}
 ?>
 	</tbody>

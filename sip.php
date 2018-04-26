@@ -74,7 +74,7 @@
 							<?php
 						} else {
 							?>
-							<p>Kolorem <span style="color: red; font-weight: bold;">czerwonym</span> oznaczone są urządzenia, których numer kolejki VNCS jest po za zakresem danego oddziału, a <span style="color: goldenrod; font-weight: bold;">żółtym</span> te, które nie były jeszcze skanowane.</p>
+                    <p>Kolorem <span style="color: red; font-weight: bold;">czerwonym</span> oznaczone są urządzenia, których numer kolejki VNCS jest po za zakresem danego oddziału, <span style="color: goldenrod; font-weight: bold;">żółtym</span> te, które nie były jeszcze skanowane, a <span style="color: green; font-weight: bold;">zielonym</span> te bez numeru kolejki.</p>
 							<?php
 						}
 					?>

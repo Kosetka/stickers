@@ -25,8 +25,14 @@
 				$result = getFieldValue($deviceID,$row['name']);
 				switch ($row['field_type']) {
 					case 0:	
+                        $testUpper = $row['name'];
+                        if(strpos($testUpper, 'pass') !== false || strpos($testUpper, 'log') !== false || strpos($testUpper, 'LOG') !== false) {
+                            $testUpper = 'text-transform: uppercase;';
+                        } else {
+                            $testUpper = '';
+                        }
 					?>
-						<input type="text" class="form-control" style="text-transform: uppercase;" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?>>
+                <input type="text" class="form-control" style="<? echo $testUpper; ?>" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?>>
 					<?php
 						break;
 					case 1:

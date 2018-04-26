@@ -17,6 +17,7 @@ function getDep($dname) {
 if($departID<>null) {
 
 	$departmentsName = [];
+    $departmentsName["brak"] = "Brak skanowania";
 	$statement = $db->prepare("SELECT * FROM firewall");
 	$statement->execute();
 	foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $dN) {
@@ -48,7 +49,9 @@ if($departID<>null) {
 					$total[$i]["device"] = $uniqueName;
 					foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $row) {
 						$total[$i]["login"] = $row["value"];
-						$total[$i]["department"] = $departmentsName[getDep($row["name"])];
+                        $gd = getDep($row["name"]);
+                        if($gd=="") $gd="brak";
+                        $total[$i]["department"] = $departmentsName[$gd];
 					}
 					$statement2 = $db->prepare("SELECT * FROM fieldvalue WHERE name = '$uniqueName' AND fieldname LIKE '%wifipass%' ORDER BY date DESC LIMIT 1");
 					$statement2->execute();
