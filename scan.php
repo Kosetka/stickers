@@ -17,7 +17,7 @@
 			$f = $q->fetch();
 			$dayDB = $f["date"];
 			$dayDB = substr($dayDB, 0, 10);
-			$ip = $_SERVER['REMOTE_ADDR'];
+            $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
 			if($day <> $dayDB) {
 				$statement = $db->prepare("INSERT INTO scan(name, ip, uid, date, department) VALUES(:name, :ip, :uid, :date, :department)");
 				$statement->execute(array(

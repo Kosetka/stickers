@@ -3,7 +3,7 @@
 
     if(testVersion=='false') {
         if(!isset($_SESSION["department"])) {
-            $ip = $_SERVER['REMOTE_ADDR'];
+            $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
             $departmentSelected = getSingleValue("firewall", "ip", $ip, "id");
             if($departmentSelected=="") {
                 $departmentSelected = 16;
@@ -55,7 +55,7 @@
     }
 
     function checkFirewall() {
-        $ip = $_SERVER['REMOTE_ADDR'];
+        $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
         $db = getDB();
         $query = "SELECT * FROM firewall WHERE ip = :ip";  
         $statement = $db->prepare($query); 

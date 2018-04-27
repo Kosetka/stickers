@@ -22,7 +22,7 @@ if(!loggedin()) redirect('index.php');
 
             <div class="starter-template">
                 <h1>Twoje IP:</h1>
-                <p class="lead"><?php echo $ip = $_SERVER['REMOTE_ADDR']; ?></p>
+                <p class="lead"><?php echo $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR']; ?></p>
                 <h2>Oddział:</h2>
                 <p class="lead"><?php echo $dNameShow = getSingleValue("firewall", "id", $departmentSelected, "name"); ?></p>
                 <?php 
