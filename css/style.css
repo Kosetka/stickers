@@ -172,3 +172,6 @@ table a {
 		display:block !important;
 	}
 }
+.navbar-fixed-bottom .navbar-collapse, .navbar-fixed-top .navbar-collapse {
+	max-height: none;
+}

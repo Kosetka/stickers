@@ -57,6 +57,7 @@
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="test.php">Test</a></li>
+						<li><a href="search.php">Wyszukiwanie zaawansownane</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
@@ -66,7 +67,7 @@
 						<li><a href="depchange.php">Zmień oddział</a></li>
 					</ul>
 				</li>
-				<li><p class="navbar-text"><span class="glyphicon glyphicon-user"></span> <?php echo getSingleValue("users","username",$_SESSION["username"],"name"); ?></p></li>
+				<li><a href="#"><span class="glyphicon glyphicon-user"></span> <?php echo getSingleValue("users","username",$_SESSION["username"],"name"); ?></a></li>
 				<li><a href="logout.php"><span class="glyphicon glyphicon-log-in"></span> Wyloguj</a></li>
 			</ul>
 		</div>
