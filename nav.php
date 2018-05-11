@@ -11,9 +11,19 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-			<div class="navbar-header">
+			
+			
 				<a class="navbar-brand" href="home.php">VC</a>
-			</div>
+				<form class="searchRWD" action="device.php">
+					<div class="input-group">
+						<input type="text" style="text-transform: uppercase;" class="form-control" placeholder="Szukaj..." name="id">
+						<div class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								<i class="glyphicon glyphicon-search"></i>
+							</button>
+						</div>
+					</div>
+				</form>
 		</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -42,21 +52,13 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<form class="navbar-form navbar-left" action="device.php">
-					<div class="input-group">
-						<input type="text" style="text-transform: uppercase;" class="form-control" placeholder="Szukaj..." name="id">
-						<div class="input-group-btn">
-							<button class="btn btn-default" type="submit">
-								<i class="glyphicon glyphicon-search"></i>
-							</button>
-						</div>
-					</div>
-				</form>
 				<li class="dropdown">
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Funkcje
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<li><a href="test.php">Test</a></li>
+						<li><a href="backup.php">Kopia bazy</a></li>
+						<li><a href="employees.php">Zarządzanie kontami</a></li>
 						<li><a href="search.php">Wyszukiwanie zaawansownane</a></li>
 					</ul>
 				</li>

@@ -165,4 +165,11 @@
         $result = $f["value"];
         return $result;
     }
+	function checkAccess($req) {
+		$lvl = getSingleValue('users','username',$_SESSION["username"],'access');
+		if($req>$lvl)
+			return false;
+		else 
+			return true;
+	}
 ?>

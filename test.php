@@ -1,8 +1,9 @@
 <?php  
-include("config.php"); 
-if(!checkFirewall()) redirect('error.php');
-if(!loggedin()) redirect('index.php');
+	include("config.php"); 
+	if(!checkFirewall()) redirect('error.php');
+	if(!loggedin()) redirect('index.php');
 
+	if(!checkAccess(9)) redirect('deny.php');
 ?>  
 <!DOCTYPE html>
 <html lang="pl">
