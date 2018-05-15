@@ -13,6 +13,8 @@
 	<form class="form-horizontal" action="" method="POST">
 <?php
 	$type_id = getSingleValue("types","tag",$gID,"id");
+	if(!statusExists($deviceID)) $dEx = true;
+		
 	$statement = $db->prepare("SELECT * FROM fields WHERE type_id = :type_id");
 	$statement->bindParam(':type_id',$type_id); 
 	$statement->execute();
@@ -73,6 +75,9 @@
 			</div>
 		</div>
 	</form>
+	<?php 
+		if(!isset($dEx)) {
+	?>
 	<h2>Zmiana statusu:</h2>
 	<form class="form-horizontal" action="" method="POST">
 		<div class="form-group"> 
@@ -106,6 +111,9 @@
 			</div>
 		</div>
 	</form>
+	<?php
+		}
+	?>
 </div>
 
 

@@ -96,7 +96,7 @@
 									}
 									if($iID=="") {
 										//redirect('home.php');
-										echo "lista wszystkich";
+										$sAll = true;
 									} else {
 										require('deviceAdd.php'); 
 									}
@@ -115,6 +115,11 @@
 						}
 					?>
 					</div>
+					<?php
+						if(!isset($sAll)) {	
+							if(!statusExists($deviceID)) $dEx = true;
+							if(!isset($dEx)) {
+					?>
 					<div class="col-sm-8">
 						<h2>Dodaj komentarz:</h2>
 						<?php 
@@ -174,7 +179,68 @@
 					</div>
 				</div>
 					<?php
-						
+							}
+						} else {
+							?>
+							<div class="col-sm-12" style="text-align: left;">
+								<h2>Lista wszystkich urządzeń - [<?php echo $gID;?>] <?php echo getSingleValue("types","tag",$gID,"name");?></h2>
+								
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th>lp.</th>
+											<th>Nazwa</th>
+											<?php
+												$db = getDB();
+												$typeID = getSingleValue("types","tag",$gID,"id");
+												$statement2 = $db->prepare("SELECT * FROM fields WHERE type_id = :typeID");
+												$statement2->bindParam(':typeID',$typeID); 
+												$statement2->execute();
+												foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $thead) {
+													echo '<th>'.$thead["title"].'</th>';
+													$arr[] = $thead['name'];
+												}
+											?>
+										</tr>
+									</thead>
+									<tbody>
+										<?php
+										
+										$ttname = "%".$gID."%";
+										$statement = $db->prepare("SELECT DISTINCT name FROM fieldvalue WHERE name LIKE :name ORDER BY name ASC");
+										$statement->bindParam(':name',$ttname); 
+										$statement->execute();
+										$j = 1;
+										$count = $statement->rowCount();
+										foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+											$rname = $row['name'];
+											echo '<tr>';
+											echo '<td>'.$j.'</td>';
+											echo '<td style="text-transform: uppercase;"><a href="device.php?id='.$rname.'">'.$rname.'</a></td>';
+											foreach ($arr as $a) {
+												$statement2 = $db->prepare("SELECT value FROM fieldvalue WHERE name LIKE :name AND fieldname = :fname ORDER BY date DESC LIMIT 1");
+												$statement2->bindParam(':name',$rname); 
+												$statement2->bindParam(':fname',$a); 
+												$statement2->execute();
+												$f = $statement2->fetch();
+												$result = $f['value'];
+												echo '<td>'.$result.'</td>';
+											}
+											
+											echo '</tr>';
+											$j++;
+										}
+							
+										?>
+									
+									</tbody>
+								</table>
+							</div>
+							
+							
+							<?php
+						}
+					
 					} else {
 						echo '<div class="col-sm-12">';
 						require('showTables.php'); //brak POST i GET
