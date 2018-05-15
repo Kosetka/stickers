@@ -95,7 +95,7 @@
 										$message = showMessage(0,"Status został zmieniony pomyślnie.");
 									}
 									if($iID=="") {
-										redirect('home.php');
+										//redirect('home.php');
 										echo "lista wszystkich";
 									} else {
 										require('deviceAdd.php'); 
