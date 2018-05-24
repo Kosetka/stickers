@@ -217,6 +217,7 @@ if(isset($_GET['id'])) {
 							<th>Skrót</th>
 							<th>IP</th>
 							<th>Stanowiska</th>
+							<th>Instancja</th>
 							<th>Akcja</th>
 						</tr>
 					</thead>
@@ -233,6 +234,7 @@ if(isset($_GET['id'])) {
 							<td><?php echo $row["tag"]; ?></td>
 							<td><?php echo $row["ip"]; ?></td>
 							<td><?php echo $row["stand"]; ?></td>
+							<td><?php echo $row["instance"]; ?></td>
 							<td><a title="Szczegóły" href="department.php?id=<?php echo $row['id']; ?>"><span class="glyphicon glyphicon-th-list" style="color: black; font-size: 1em"></span></a></td>
 						</tr>
 

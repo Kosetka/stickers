@@ -35,6 +35,7 @@
 					<ul class="dropdown-menu">
 						<li><a href="type.php">Typ urządzeń</a></li>
 						<li><a href="department.php">Oddział</a></li>
+						<li><a href="privphone.php">Prywatny telefon</a></li>
 					</ul>
 				</li>
 				<li><a href="scan.php">Skanowanie</a></li>

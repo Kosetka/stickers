@@ -141,18 +141,35 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 							}
 							echo '</tr>';
 							if(isset($details)) {
+								
 								if($n>0) {
+									$cte = 1;
 									$diff = array_diff($devNames[$n], $devNames[$n-1]);
 									foreach($diff as $dev) {
-										echo '<tr>';
+										if ($cte<=1) {
+											echo '<tr>';
+											echo '<td></td>';
+										}
 										echo '<td class="more"><a href="device.php?id='.$dev.'">'.$dev.'</a></td>';
-										echo '</tr>';
+										if($cte>=19) {
+											echo '</tr>';
+											$cte = 0;
+										}
+										$cte++;
 									}
+									$cte = 1;
 									$diff = array_diff($devNames[$n-1], $devNames[$n]);
 									foreach($diff as $dev) {
-										echo '<tr>';
+										if ($cte<=1) {
+											echo '<tr>';
+											echo '<td></td>';
+										}
 										echo '<td class="less"><a href="device.php?id='.$dev.'">'.$dev.'</a></td>';
-										echo '</tr>';
+										if($cte>=19) {
+											echo '</tr>';
+											$cte = 0;
+										}
+										$cte++;
 									}
 								}
 								$n++;
