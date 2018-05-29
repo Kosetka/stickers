@@ -157,25 +157,26 @@
 									$stmt->bindParam(':dstart',$dstart); 
 									$stmt->bindParam(':dend',$dend); 
 									$stmt->execute();
-									$c2 = $stmt->fetchColumn();
 									$working = 0;
 									$nWorking = 0;
-									$statement2 = $db->prepare("SELECT DISTINCT name FROM status WHERE name LIKE :name");
-									$statement2->bindParam(':name',$c2); 
-									$statement2->execute();
-									foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $device) {
-										$dd = $device['name'];
-										$statement3 = $db->prepare("SELECT * FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
-										$statement3->bindParam(':name',$dd); 
-										$statement3->execute();
-										$f = $statement3->fetch();
-										if($f['status']==2) {
-											$nWorking += 1;
-
-										} elseif($f['status']==1) {
-											$working +=1;
+									foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $ddd) {
+										$statement2 = $db->prepare("SELECT DISTINCT name FROM status WHERE name LIKE :name");
+										$statement2->bindParam(':name',$ddd["name"]); 
+										$statement2->execute();
+										foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $device) {
+											$dd = $device['name'];
+											$statement3 = $db->prepare("SELECT * FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
+											$statement3->bindParam(':name',$dd); 
+											$statement3->execute();
+											$f = $statement3->fetch();
+											if($f['status']==2) {
+												$nWorking += 1;
+											} elseif($f['status']==1) {
+												$working +=1;
+											}
 										}
 									}
+									
 									echo "<td class='more' title='Sprawne'>".$working."</td>";
 									echo "<td class='less' title='Zepsute'>".$nWorking."</td>";
 								} else {

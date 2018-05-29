@@ -121,6 +121,14 @@
 							if(!isset($dEx)) {
 					?>
 					<div class="col-sm-8">
+						<?php 
+							$db = getDB();
+							$q = $db->query("SELECT department FROM scan WHERE name='$deviceID' ORDER BY date DESC LIMIT 1");
+							$f = $q->fetch();
+							$res = $f["department"];
+							$depName = getSingleValue("firewall","id",$res,"name");
+						?>
+						<h2>Ostatnie skanowanie: <?php echo $depName;?></h2>
 						<h2>Dodaj komentarz:</h2>
 						<?php 
 							if(isset($message2)) {  

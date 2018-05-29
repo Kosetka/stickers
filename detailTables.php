@@ -58,7 +58,7 @@ if($departID <> null) {
 
 					<?php 
 				if($departID<>"all") { // raport oddział
-					$stmt = $db->prepare("SELECT * FROM scan WHERE name = :name ORDER BY date DESC LIMIT 1");
+					$stmt = $db->prepare("SELECT department FROM scan WHERE name = :name ORDER BY date DESC LIMIT 1");
 					$stmt->bindParam(':name',$rname); 
 					$stmt->execute();
 					$depid = $stmt->fetch();
