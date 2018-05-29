@@ -201,6 +201,12 @@ if($departID<>null) {
 		//print_r($taken);
 		
 		echo '<h2 class="text-center">Lista kolejek:</h2>';
+		$instan = getSingleValue("firewall","id",$departID,"instance");
+		if($instan==1) {
+			$instan = "";
+		}
+		echo '<h4>Domena: sip.vc'.$instan.'.e-pbx.pl</h4>';
+		echo '<h4>Hasło: '.getSingleValue("firewall","id",$departID,"password").'</h4>';
 		echo '<table class="table table-bordered">';
 		for($j=0;$j<=$ch;$j++) {
 			echo '<tr>';

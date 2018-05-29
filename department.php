@@ -16,6 +16,7 @@ if(isset($_POST["depSend"])) {
 		$listeningfrom = $_POST["listeningfrom"];
 		$listeningto = $_POST["listeningto"];
 		$instance = $_POST["instance"];
+		$password = $_POST["password"];
 		$query = "SELECT * FROM firewall WHERE tag = :tag"; 
 		$db = getDB();
 		$statement = $db->prepare($query); 
@@ -24,7 +25,7 @@ if(isset($_POST["depSend"])) {
 		$count = $statement->rowCount();  
 		if($count <= 0) {
 			try {
-				$statement = $db->prepare("INSERT INTO firewall(name, tag, ip, stand, range_from, range_to, listening_from, listening_to, instance) VALUES(:name, :tag, :ip, :stand, :range_from, :range_to, :listening_from, :listening_to, :instance)");
+				$statement = $db->prepare("INSERT INTO firewall(name, tag, ip, stand, range_from, range_to, listening_from, listening_to, instance, password) VALUES(:name, :tag, :ip, :stand, :range_from, :range_to, :listening_from, :listening_to, :instance, :password)");
 				$statement->execute(array(
 					"name" => $name,
 					"ip" => $ip,
@@ -34,6 +35,7 @@ if(isset($_POST["depSend"])) {
 					"listening_from" => $listeningfrom,
 					"listening_to" => $listeningto,
 					"instance" => $instance,
+					"password" => $password,
 					"tag" => $tag
 				));
 				$message = showMessage(0,' Oddział został dodany.');
@@ -70,9 +72,10 @@ if(isset($_GET['id'])) {
 				$listeningfrom = $_POST["listeningfrom"];
 				$listeningto = $_POST["listeningto"];
 				$instance = $_POST["instance"];
+				$password = $_POST["password"];
 				try {
 					$db = getDB();
-					$statement = $db->prepare("UPDATE firewall SET name = :name, tag = :tag, ip = :ip, range_from = :range_from, range_to = :range_to, listening_from = :listening_from, listening_to = :listening_to, instance = :instance, stand = :stand WHERE id = :id");
+					$statement = $db->prepare("UPDATE firewall SET name = :name, tag = :tag, ip = :ip, range_from = :range_from, range_to = :range_to, listening_from = :listening_from, listening_to = :listening_to, instance = :instance, password = :password, stand = :stand WHERE id = :id");
 					$statement->execute(array(
 						"name" => $name,
 						"tag" => $tag,
@@ -83,6 +86,7 @@ if(isset($_GET['id'])) {
 						"listening_from" => $listeningfrom,
 						"listening_to" => $listeningto,
 						"instance" => $instance,
+						"password" => $password,
 						"stand" => $stand
 					));
 
@@ -110,6 +114,7 @@ if(isset($_GET['id'])) {
 			$listeningfrom = getSingleValue("firewall", "id", $typeID, "listening_from");
 			$listeningto = getSingleValue("firewall", "id", $typeID, "listening_to");
 			$instance = getSingleValue("firewall", "id", $typeID, "instance");
+			$password = getSingleValue("firewall", "id", $typeID, "password");
 
 		} else {
 			redirect("department.php");
@@ -194,6 +199,12 @@ if(isset($_GET['id'])) {
 						<label class="control-label col-sm-offset-1 col-sm-4" for="instance">Instancja:</label>
 						<div class="col-sm-2">          
 							<input type="number" class="form-control" id="instance" placeholder="" name="instance" <?php if(isset($numeric)) echo "value='$instance'"; ?> required>
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-sm-offset-1 col-sm-4" for="password">Hasło:</label>
+						<div class="col-sm-6">          
+							<input type="text" class="form-control" id="password" placeholder="" name="password" <?php if(isset($numeric)) echo "value='$password'"; ?> required>
 						</div>
 					</div>
 					<div class="form-group">        

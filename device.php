@@ -163,6 +163,7 @@
 								$stmt = $db->prepare("SELECT * FROM comments WHERE did = :did ORDER BY date DESC");
 								$stmt->bindParam(':did',$deviceID); 
 								$stmt->execute();
+								$commentsCount = 0;
 								foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $comm) {
 									$user = getSingleValue("users","id",$comm["uid"],"name");
 									echo '<div class="col-sm-12">
@@ -181,10 +182,45 @@
 														
 									echo '	</div>
 												</div>';
+									$commentsCount++;
+								}
+								if($commentsCount<=0) {
+									echo showMessage(2,' Brak komentarzy do wyświetlenia.');
 								}
 							?>
 					
 					</div>
+					<div class="text-center">
+						<h2>Historia skanowania:</h2>
+					</div> 
+					<table class="table table-bordered">
+						<thead>
+							<tr>
+								<th>Oddział</th>
+								<th>Data</th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+
+							try {
+								$db = getDB();
+								$statement = $db->prepare("SELECT * FROM scan WHERE name = '$deviceID' ORDER BY date DESC");
+								$statement->execute();
+								foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+									echo "<tr>";
+									echo "<td>".getSingleValue('firewall','id',$row['department'],'name')."</td>";
+									echo "<td>".$row['date']."</td>";
+									echo "</tr>";
+								}
+
+
+							} catch(PDOException $e) {
+								echo $e->getMessage();
+							}
+							?>
+						</tbody>
+					</table>
 				</div>
 					<?php
 							}

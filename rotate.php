@@ -151,7 +151,7 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 											echo '<td></td>';
 										}
 										echo '<td class="more"><a href="device.php?id='.$dev.'">'.$dev.'</a></td>';
-										if($cte>=19) {
+										if($cte>=18) {
 											echo '</tr>';
 											$cte = 0;
 										}
@@ -165,7 +165,7 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 											echo '<td></td>';
 										}
 										echo '<td class="less"><a href="device.php?id='.$dev.'">'.$dev.'</a></td>';
-										if($cte>=19) {
+										if($cte>=18) {
 											echo '</tr>';
 											$cte = 0;
 										}
