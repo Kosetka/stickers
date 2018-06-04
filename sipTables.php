@@ -22,7 +22,7 @@ if($departID<>null) {
 		$departmentsName[$dN["id"]] = $dN["name"];
 	}
 ?>
-
+<div class="table-responsive">
 <table class="table table-bordered">
 	<thead>
 		<tr>
@@ -152,6 +152,7 @@ if($departID<>null) {
 ?>
 	</tbody>
 </table>
+</div>
 
 
 <?php
@@ -207,7 +208,7 @@ if($departID<>null) {
 		}
 		echo '<h4>Domena: sip.vc'.$instan.'.e-pbx.pl</h4>';
 		echo '<h4>Hasło: '.getSingleValue("firewall","id",$departID,"password").'</h4>';
-		echo '<table class="table table-bordered">';
+		echo '<div class="table-responsive"><table class="table table-bordered">';
 		for($j=0;$j<=$ch;$j++) {
 			echo '<tr>';
 			for($i=0;$i<=19;$i++) {
@@ -241,7 +242,7 @@ if($departID<>null) {
 			}
 			echo '</tr>';
 		}
-		echo '</table>';
+		echo '</table></div>';
 	}
 }
 ?>

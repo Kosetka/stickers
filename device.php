@@ -15,6 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"> 
 		<link rel="stylesheet" href="css/style.css"/> 
+		<link rel="stylesheet" href="css/jasny-bootstrap.min.css"/> 
 	</head>
 	<body>
 		<?php
@@ -45,6 +46,18 @@
 									"link" => $devLink,
 									"content" => $content
 								));
+								$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+								$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+								$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+								$statement->execute(array(
+									"uid" => $userID,
+									"aid" => 5,
+									"result" => "success",
+									"date" => $today,
+									"ip" => $ip,
+									"did" => $deviceID,
+									"department" => $departmentSelected
+								));
 								$message2 = showMessage(0,"Komentarz został dodany.");
 								unset($_POST["commSend"]);
 							}
@@ -70,8 +83,8 @@
 												));
 											}
 										}
+										$userID = getSingleValue("users","username",$_SESSION["username"],"id");
 										if(!statusExists($deviceID)) {
-											$userID = getSingleValue("users","username",$_SESSION["username"],"id");
 											$statement = $db->prepare("INSERT INTO status(name, status, uid, date) VALUES(:name, :status, :uid, :date)");
 											$statement->execute(array(
 												"name" => $deviceID,
@@ -79,8 +92,19 @@
 												"uid" => $userID,
 												"date" => $today
 											));
-											
 										}
+										$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+										$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+										$statement->execute(array(
+											"uid" => $userID,
+											"aid" => 2,
+											"result" => "success",
+											"date" => $today,
+											"ip" => $ip,
+											"did" => $deviceID,
+											"department" => $departmentSelected
+										));
+										
 										$message = showMessage(0,"Dane zostały zapisane.");
 									} elseif(isset($_POST['statusSend'])) {
 										$db = getDB();
@@ -91,6 +115,17 @@
 											"status" => $_POST['status'],
 											"uid" => $userID,
 											"date" => $today
+										));
+										$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+										$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+										$statement->execute(array(
+											"uid" => $userID,
+											"aid" => 3,
+											"result" => $_POST['status'],
+											"date" => $today,
+											"ip" => $ip,
+											"did" => $deviceID,
+											"department" => $departmentSelected
 										));
 										$message = showMessage(0,"Status został zmieniony pomyślnie.");
 									}
@@ -295,5 +330,6 @@
 		</div><!-- /.container -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script src="js/jasny-bootstrap.min.js"></script>
 	</body>
 </html>

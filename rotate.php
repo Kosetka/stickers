@@ -94,6 +94,7 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 			if(isset($reportSend)) {
 
 			?> 
+			<div class="table-responsive">
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -182,6 +183,7 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 					?>
 				</tbody>
 			</table>
+			</div>
 			<?php
 			}
 			?>

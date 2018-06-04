@@ -29,8 +29,8 @@ if(isset($_POST['department'])) {
 						<h4>Kryteria:</h4>
 						<form class="form-horizontal" action="" method="POST">
 							<div class="form-group">
-								<label class="control-label col-sm-2" for="department">Oddział:</label>
-								<div class="col-sm-10"> 
+								<label class="control-label col-sm-3" for="department">Oddział:</label>
+								<div class="col-sm-9"> 
 									<select class="form-control" name="department" id="department" required>
 										<option value="all" selected>Wszystkie</option>
 										<?php
@@ -42,6 +42,27 @@ if(isset($_POST['department'])) {
 											if(isset($_POST['department']) && $_POST['department']==$value['tag']) {
 												echo '<option value="'.$value["tag"].'" selected>'.$value["name"].'</option>';
 												$departName = $value["name"];
+											}
+											else
+												echo '<option value="'.$value["tag"].'">'.$value["name"].'</option>';
+										}
+										?>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-3" for="device">Urządzenie:</label>
+								<div class="col-sm-9"> 
+									<select class="form-control" name="device" id="device" required>
+										<?php
+										$db = getDB();
+										$statement2 = $db->prepare("SELECT * FROM types");
+										$statement2->execute();
+
+										foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $value) {
+											if(isset($_POST['device']) && $_POST['device']==$value['tag']) {
+												echo '<option value="'.$value["tag"].'" selected>'.$value["name"].'</option>';
+												$deviceName = $value["name"];
 											}
 											else
 												echo '<option value="'.$value["tag"].'">'.$value["name"].'</option>';

@@ -7,17 +7,17 @@
 	if(isset($_POST["scanSend"])) {
 		$name = strtoupper($_POST["name"]);
 		
+		$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+		$today = date("Y-m-d H:i:s");
+		$day = date("Y-m-d");
+		$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+		$db = getDB();
 		if(statusExists($name)) {
-			$userID = getSingleValue("users","username",$_SESSION["username"],"id");
-			$today = date("Y-m-d H:i:s");
-			$day = date("Y-m-d");
-			$db = getDB();
 			
 			$q = $db->query("SELECT date FROM scan WHERE name='$name' ORDER BY date DESC LIMIT 1");
 			$f = $q->fetch();
 			$dayDB = $f["date"];
 			$dayDB = substr($dayDB, 0, 10);
-            $ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
 			if($day <> $dayDB) {
 				$statement = $db->prepare("INSERT INTO scan(name, ip, uid, date, department) VALUES(:name, :ip, :uid, :date, :department)");
 				$statement->execute(array(
@@ -32,12 +32,32 @@
 							audio = new Audio('sound/success.wav');
 							audio.play();
 						</script>";
+				$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+				$statement->execute(array(
+					"uid" => $userID,
+					"aid" => 1,
+					"result" => "success",
+					"date" => $today,
+					"ip" => $ip,
+					"did" => $name,
+					"department" => $departmentSelected
+				));
 			} else {
 				$message = showMessage(1," ".$name." - Urządzenie było już dzisiaj skanowane.");
 				echo "<script>
 							audio = new Audio('sound/warning.wav');
 							audio.play();
 						</script>";
+				$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+				$statement->execute(array(
+					"uid" => $userID,
+					"aid" => 1,
+					"result" => "warning",
+					"date" => $today,
+					"ip" => $ip,
+					"did" => $name,
+					"department" => $departmentSelected
+				));
 			}
 		} else {
 			$message = showMessage(1," ".$name." - Sprzęt nie został jeszcze dodany.");
@@ -45,6 +65,16 @@
 							audio = new Audio('sound/error.wav');
 							audio.play();
 						</script>";
+			$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+			$statement->execute(array(
+				"uid" => $userID,
+				"aid" => 1,
+				"result" => "error",
+				"date" => $today,
+				"ip" => $ip,
+				"did" => $name,
+				"department" => $departmentSelected
+			));
 		}
 	}
 

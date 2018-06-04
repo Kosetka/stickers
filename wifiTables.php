@@ -24,7 +24,7 @@ if($departID<>null) {
 		$departmentsName[$dN["id"]] = $dN["name"];
 	}
 	?>
-
+<div class="table-responsive">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -100,6 +100,7 @@ if($departID<>null) {
 			?>
 		</tbody>
 	</table>
+</div>
 <?php
 }
 ?>

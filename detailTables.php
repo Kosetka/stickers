@@ -9,12 +9,15 @@ if(isset($_POST['depSend'])) {
 	$departID = null;
 }
 if($departID <> null) {
-	$statement = $db->prepare("SELECT * FROM types");
+	$postTag = $_POST['device'];
+	$statement = $db->prepare("SELECT * FROM types WHERE tag = '$postTag'");
 	$statement->execute();
 	foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $typeName) {
 		$arr = [];
+	
 	?>
 	<p class="lead tname"><?php echo "[".$typeName['tag']."] ".$typeName['name'];?></p>
+<div class="table-responsive">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -274,6 +277,7 @@ if($departID <> null) {
 			?>
 		</tbody>
 	</table>
+</div>
 	<?php 
 	}
 }

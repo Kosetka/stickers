@@ -109,98 +109,100 @@
 				if(isset($reportSend)) {
 
 			?> 
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<th>Urządzenie</th>
-						<?php
-							if($department=="all") 
-								$statement = $db->prepare("SELECT * FROM firewall");
-							else {
-								$statement = $db->prepare("SELECT * FROM firewall WHERE tag = :tag");
-								$statement->bindParam(':tag',$department); 
-							}
-							$statement->execute();
-							$depart = [];
-							foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $fw) {
-								echo "<th colspan='2' title='".$fw['name']."'>".$fw['tag']."</th>";
-								$depart[] = $fw['id'];
-							}
-						?>
-						
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					try {
-						$statement = $db->prepare("SELECT * FROM types");
-
-						$statement->execute();
-						foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-							echo "<tr>";
-							echo "<th title='".$row['name']."'>".$row['name']."</th>";
-							$name = '%'.$row["tag"].'%';
-							
-							
-							
-							foreach ($depart as $dep) {
-								$statement = $db->prepare("SELECT COUNT(DISTINCT name) FROM scan WHERE department = :dep AND name LIKE :name AND date>= :dstart AND date<= :dend;");
-								$statement->bindParam(':dep',$dep); 
-								$statement->bindParam(':name',$name); 
-								$statement->bindParam(':dstart',$dstart); 
-								$statement->bindParam(':dend',$dend); 
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead>
+						<tr>
+							<th>Urządzenie</th>
+							<?php
+								if($department=="all") 
+									$statement = $db->prepare("SELECT * FROM firewall");
+								else {
+									$statement = $db->prepare("SELECT * FROM firewall WHERE tag = :tag");
+									$statement->bindParam(':tag',$department); 
+								}
 								$statement->execute();
-								$count = $statement->fetchColumn(); 
-								if($dep==16) { // 16 to ID magazynu
-									$stmt = $db->prepare("SELECT DISTINCT name FROM scan WHERE department = 16 AND name LIKE :name AND date>= :dstart AND date<= :dend;");
-									$stmt->bindParam(':name',$name); 
-									$stmt->bindParam(':dstart',$dstart); 
-									$stmt->bindParam(':dend',$dend); 
-									$stmt->execute();
-									$working = 0;
-									$nWorking = 0;
-									foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $ddd) {
-										$statement2 = $db->prepare("SELECT DISTINCT name FROM status WHERE name LIKE :name");
-										$statement2->bindParam(':name',$ddd["name"]); 
-										$statement2->execute();
-										foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $device) {
-											$dd = $device['name'];
-											$statement3 = $db->prepare("SELECT * FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
-											$statement3->bindParam(':name',$dd); 
-											$statement3->execute();
-											$f = $statement3->fetch();
-											if($f['status']==2) {
-												$nWorking += 1;
-											} elseif($f['status']==1) {
-												$working +=1;
+								$depart = [];
+								foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $fw) {
+									echo "<th colspan='2' title='".$fw['name']."'>".$fw['tag']."</th>";
+									$depart[] = $fw['id'];
+								}
+							?>
+
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						try {
+							$statement = $db->prepare("SELECT * FROM types");
+
+							$statement->execute();
+							foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+								echo "<tr>";
+								echo "<th title='".$row['name']."'>".$row['name']."</th>";
+								$name = '%'.$row["tag"].'%';
+
+
+
+								foreach ($depart as $dep) {
+									$statement = $db->prepare("SELECT COUNT(DISTINCT name) FROM scan WHERE department = :dep AND name LIKE :name AND date>= :dstart AND date<= :dend;");
+									$statement->bindParam(':dep',$dep); 
+									$statement->bindParam(':name',$name); 
+									$statement->bindParam(':dstart',$dstart); 
+									$statement->bindParam(':dend',$dend); 
+									$statement->execute();
+									$count = $statement->fetchColumn(); 
+									if($dep==16) { // 16 to ID magazynu
+										$stmt = $db->prepare("SELECT DISTINCT name FROM scan WHERE department = 16 AND name LIKE :name AND date>= :dstart AND date<= :dend;");
+										$stmt->bindParam(':name',$name); 
+										$stmt->bindParam(':dstart',$dstart); 
+										$stmt->bindParam(':dend',$dend); 
+										$stmt->execute();
+										$working = 0;
+										$nWorking = 0;
+										foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $ddd) {
+											$statement2 = $db->prepare("SELECT DISTINCT name FROM status WHERE name LIKE :name");
+											$statement2->bindParam(':name',$ddd["name"]); 
+											$statement2->execute();
+											foreach ($statement2->fetchAll(PDO::FETCH_ASSOC) as $device) {
+												$dd = $device['name'];
+												$statement3 = $db->prepare("SELECT * FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
+												$statement3->bindParam(':name',$dd); 
+												$statement3->execute();
+												$f = $statement3->fetch();
+												if($f['status']==2) {
+													$nWorking += 1;
+												} elseif($f['status']==1) {
+													$working +=1;
+												}
 											}
 										}
-									}
-									
-									echo "<td class='more' title='Sprawne'>".$working."</td>";
-									echo "<td class='less' title='Zepsute'>".$nWorking."</td>";
-								} else {
-									if($row["tag"]=="PC") {
-										$stand = getSingleValue('firewall','id',$dep,'stand');
-										$class = "";
-										if($count>$stand) $class = "more";
-										elseif($count<$stand) $class = "less";
-										else $class = "equal";
-										echo "<td class='".$class."' title='Liczba urządzeń'>".$count."</td>";
-										echo "<td class='".$class."' title='Liczba stanowisk'>".$stand."</td>";
+
+										echo "<td class='more' title='Sprawne'>".$working."</td>";
+										echo "<td class='less' title='Zepsute'>".$nWorking."</td>";
 									} else {
-										echo "<td colspan='2'>".$count."</td>";
+										if($row["tag"]=="PC") {
+											$stand = getSingleValue('firewall','id',$dep,'stand');
+											$class = "";
+											if($count>$stand) $class = "more";
+											elseif($count<$stand) $class = "less";
+											else $class = "equal";
+											echo "<td class='".$class."' title='Liczba urządzeń'>".$count."</td>";
+											echo "<td class='".$class."' title='Liczba stanowisk'>".$stand."</td>";
+										} else {
+											echo "<td colspan='2'>".$count."</td>";
+										}
 									}
 								}
+								echo "</tr>";
 							}
-							echo "</tr>";
+						} catch(PDOException $e) {
+							echo $e->getMessage();
 						}
-					} catch(PDOException $e) {
-						echo $e->getMessage();
-					}
-					?>
-				</tbody>
-			</table>
+						?>
+					</tbody>
+				</table>
+			</div>
 			<?php
 				}
 			?>

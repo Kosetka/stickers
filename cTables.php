@@ -18,6 +18,7 @@ if($departID<>null) {
 		$arr = [];
 	?>
 	<p class="lead tname"><?php echo "[".$typeName['tag']."] ".$typeName['name'];?></p>
+<div class="table-responsive">
 	<table class="table table-bordered">
 		<thead>
 			<tr>
@@ -70,6 +71,8 @@ if($departID<>null) {
 				}
 			}
 			$j = 1;
+			//$total = asort($total);
+			ksort($total);
 			foreach($total as $t=>$v) {
 				if($v>0) {
 					echo '<tr>';
@@ -85,6 +88,7 @@ if($departID<>null) {
 			?>
 		</tbody>
 	</table>
+</div>
 <?php 
 	}
 }

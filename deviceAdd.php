@@ -34,7 +34,7 @@
 							$testUpper = 'text-transform: uppercase;';
                         }
 					?>
-                <input type="text" class="form-control" style="<?php echo $testUpper; ?>" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?>>
+				<input type="text" class="form-control" style="<?php echo $testUpper; ?>" id="<?php echo $row['name']?>" value="<?php echo $result; ?>" name="<?php echo $row['name']?>"<?php echo $row['required']==1?' required':''; ?> autocomplete="off" <?php if(strpos($row['name'], 'mac') !== false) { echo 'data-mask="ww:ww:ww:ww:ww:ww"';}?>>
 					<?php
 						break;
 					case 1:
