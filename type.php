@@ -22,11 +22,40 @@
 						"name" => $name,
 						"tag" => $tag
 					));
+					
+					$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+					$today = date("Y-m-d H:i:s");
+					$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+					$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+					$statement->execute(array(
+						"uid" => $userID,
+						"aid" => 4,
+						"result" => "success",
+						"date" => $today,
+						"ip" => $ip,
+						"did" => $tag,
+						"department" => $departmentSelected
+					));
+					
+					
 					$message = showMessage(0,' Typ urządzenia został dodany.');
 				} catch(PDOException $e) {
 					echo $e->getMessage();
 				}
 			} else {
+				$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+				$today = date("Y-m-d H:i:s");
+				$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+				$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+				$statement->execute(array(
+					"uid" => $userID,
+					"aid" => 4,
+					"result" => "error",
+					"date" => $today,
+					"ip" => $ip,
+					"did" => $tag,
+					"department" => $departmentSelected
+				));
 				$message = showMessage(1,' Ten skrót jest już zajęty.');
 			}
 		}
@@ -84,6 +113,20 @@
 								}
 							}
 							
+							$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+							$today = date("Y-m-d H:i:s");
+							$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+							$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+							$statement->execute(array(
+								"uid" => $userID,
+								"aid" => 6,
+								"result" => "success",
+								"date" => $today,
+								"ip" => $ip,
+								"did" => $fid,
+								"department" => $departmentSelected
+							));
+							
 							$message = showMessage(0,' Pole zostało dodane.');
 						} catch(PDOException $e) {
 							echo $e->getMessage();
@@ -122,6 +165,19 @@
 								));
 							}
 						}
+						$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+						$today = date("Y-m-d H:i:s");
+						$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+						$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+						$statement->execute(array(
+							"uid" => $userID,
+							"aid" => 7,
+							"result" => "success",
+							"date" => $today,
+							"ip" => $ip,
+							"did" => $fid,
+							"department" => $departmentSelected
+						));
 						$message = showMessage(0,' Edycja pomyślna.');
 					} catch(PDOException $e) {
 						echo $e->getMessage();

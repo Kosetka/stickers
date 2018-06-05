@@ -62,6 +62,7 @@
 						<li><a href="mikrotik.php">Dostępy MikroTik</a></li>
 						<li><a href="employees.php">Zarządzanie kontami</a></li>
 						<li><a href="search.php">Wyszukiwanie zaawansownane</a></li>
+						<li><a href="logs.php">Logi aktywności</a></li>
 						<li><a href="scanlogs.php">Logi skanowania</a></li>
 					</ul>
 				</li>
