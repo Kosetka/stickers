@@ -113,7 +113,7 @@ if(isset($_GET['id'])) {
 							foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 						?>
 						<tr>
-							<td><?php echo $row["name"]; ?></td>
+							<td><?php echo '<a href=device.php?id='.$row["name"].'>'.$row["name"].'</a>'; ?></td>
 							<?php
 								$rname = $row["name"];
 								$rns = ["PTpracownik", "PTvncs", "PToddzial"];

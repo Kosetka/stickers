@@ -121,28 +121,58 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 					}
 				try {
 					$n = 0;
+					$temparr = [];
+					
 					foreach($date as $d) {
+						$dte = substr($d, 0, 7);
+						$dstart = $dte.'-01';
+						$dend = $dte.'-31';
+						if(!in_array($dte, $temparr)) {
+							$temparr[] = $dte;
+							$skip = false;
+						} else {
+							$skip = false;
+						}
+					}
+					$months = ["01"=>"Styczeń", "02"=>"Luty", "03"=>"Marzec", "04"=>"Kwiecień", "05"=>"Maj", "06"=>"Czerwiec", "07"=>"Lipiec", "08"=>"Sierpień", "09"=>"Wrzesień", "10"=>"Październik", "11"=>"Listopad", "12"=>"Grudzień"];
+					foreach($temparr as $d) {
 						$check = $db->prepare("SELECT COUNT(*) FROM scan WHERE date LIKE '$d%' AND department = $depID");
 						$check->execute();
 						$ch = $check->fetchColumn(); 
+						
+						$dte = substr($d, 0, 8);
+						$dstart = $dte.'-01';
+						$dend = $dte.'-31';
+						if(!in_array($dte, $temparr)) {
+							$temparr[] = $dte;
+						} 
+						$year = substr($d, 0, 4);
+						$mon = substr($d, 5, 2);
+						
 						if($ch>0) {
 							echo '<tr>';
-							echo '<th>'.$d.'</th>';
+							echo '<th>'.$year.' - '.$months[$mon].'</th>';
 							$devNames[$n] = [];
-							$sts = $db->prepare("SELECT * FROM scan WHERE date LIKE '$d%' AND department = $depID");
+							//$sts = $db->prepare("SELECT * FROM scan WHERE date LIKE '$d%' AND department = $depID");
+
+							$sts = $db->prepare("SELECT * FROM scan WHERE date >= '$dstart%' AND date <= '$dend%' AND department = $depID");
+
 							$sts->execute();
 							foreach ($sts->fetchAll(PDO::FETCH_ASSOC) as $devN) {
 								$devNames[$n][] = $devN["name"];
 							}
 							foreach($dname as $dn) {
-								$statement = $db->prepare("SELECT COUNT(*) FROM scan WHERE date LIKE '$d%' AND department = $depID AND name LIKE '%$dn%'");
+								//$statement = $db->prepare("SELECT COUNT(*) FROM scan WHERE date LIKE '$d%' AND department = $depID AND name LIKE '%$dn%'");
+
+								$statement = $db->prepare("SELECT COUNT(*) FROM scan WHERE date >= '$dstart%' AND date <= '$dend%' AND department = $depID AND name LIKE '%$dn%'");
+
 								$statement->execute();
 								$ccom = $statement->fetchColumn(); 
 								echo '<td>'.$ccom.'</td>';
 							}
 							echo '</tr>';
 							if(isset($details)) {
-								
+
 								if($n>0) {
 									$cte = 1;
 									$diff = array_diff($devNames[$n], $devNames[$n-1]);
@@ -176,6 +206,8 @@ if(isset($_POST["dateSend"]) || isset($_POST["dateSend2"])) {
 								$n++;
 							}
 						}
+							
+						
 					}
 				} catch(PDOException $e) {
 					echo $e->getMessage();
