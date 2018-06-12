@@ -104,17 +104,19 @@ if($departID<>null) {
 	}
 	$i=1;
 	foreach($total as $t) {
-		echo '<tr>';
-		echo '<td>'.$i.'</td>';
-		echo '<td><a href="device.php?id='.$t["device"].'">'.$t["device"].'</a></td>';
-		echo '<td>'.$t["department"].'</td>';
-		echo '<td>'.$t["login"].'</td>';
-		echo '<td>'.$t["pass"].'</td>';
-		echo '<td>'.$t["gateway"].'</td>';
-		$temp = $t["department"];
-		echo '<td>'.getSingleValue("firewall","name",$temp,"ip").'</td>';
-		echo '</tr>';
-		$i++;
+		if($t["department"]<>"Magazyn") {
+			echo '<tr>';
+			echo '<td>'.$i.'</td>';
+			echo '<td><a href="device.php?id='.$t["device"].'">'.$t["device"].'</a></td>';
+			echo '<td>'.$t["department"].'</td>';
+			echo '<td>'.$t["login"].'</td>';
+			echo '<td>'.$t["pass"].'</td>';
+			echo '<td>'.$t["gateway"].'</td>';
+			$temp = $t["department"];
+			echo '<td>'.getSingleValue("firewall","name",$temp,"ip").'</td>';
+			echo '</tr>';
+			$i++;
+		}
 	}
 		?>
 	</tbody>

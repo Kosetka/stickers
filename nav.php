@@ -57,7 +57,7 @@
 					<a class="dropdown-toggle" data-toggle="dropdown" href="#">Funkcje
 						<span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="test.php">Test</a></li>
+						<!---<li><a href="test.php">Test</a></li>-->
 						<li><a href="backup.php">Kopia bazy</a></li>
 						<li><a href="mikrotik.php">Dostępy MikroTik</a></li>
 						<li><a href="employees.php">Zarządzanie kontami</a></li>

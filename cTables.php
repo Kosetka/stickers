@@ -73,6 +73,7 @@ if($departID<>null) {
 			$j = 1;
 			//$total = asort($total);
 			ksort($total);
+			$totalnumber = 0;
 			foreach($total as $t=>$v) {
 				if($v>0) {
 					echo '<tr>';
@@ -81,7 +82,14 @@ if($departID<>null) {
 					echo '<td>'.$v.'</td>';
 					echo '</tr>';
 				}
+				$totalnumber+=$v;
 			}
+			echo '<tr>';
+			echo '<th colspan="2">Łącznie: </th>';
+			echo '<th>'.$totalnumber.'</th>';
+			
+			echo '</tr>';
+			
 		} catch(PDOException $e) {
 			echo $e->getMessage();
 		}

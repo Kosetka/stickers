@@ -162,8 +162,12 @@
 							$f = $q->fetch();
 							$res = $f["department"];
 							$depName = getSingleValue("firewall","id",$res,"name");
+							$q = $db->query("SELECT date FROM scan WHERE name='$deviceID' ORDER BY date DESC LIMIT 1");
+							$f = $q->fetch();
+							$res = $f["date"];
 						?>
 						<h2>Ostatnie skanowanie: <?php echo $depName;?></h2>
+						<h4>Data: <?php echo $res; ?></h4>
 						<h2>Dodaj komentarz:</h2>
 						<?php 
 							if(isset($message2)) {  
