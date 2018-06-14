@@ -168,14 +168,10 @@
 							$q = $db->query("SELECT uid FROM scan WHERE name='$deviceID' AND date = '$res' ORDER BY date DESC LIMIT 1");
 							$f = $q->fetch();
 							$res2 = getSingleValue("users","id",$f["uid"],"name");
-							$q = $db->query("SELECT uid FROM status WHERE name='$deviceID' ORDER BY date ASC LIMIT 1");
-							$f = $q->fetch();
-							$res3 = getSingleValue("users","id",$f["uid"],"name");
 						?>
 						<h2>Ostatnie skanowanie: <?php echo $depName;?></h2>
 						<h4>Data: <?php echo $res; ?></h4>
 						<h4>Skanujący: <?php echo $res2; ?></h4>
-						<h4>Dodał: <?php echo $res3; ?></h4>
 						<h2>Dodaj komentarz:</h2>
 						<?php 
 							if(isset($message2)) {  
@@ -245,6 +241,7 @@
 							<tr>
 								<th>Oddział</th>
 								<th>Data</th>
+								<th>Użytkownik</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -252,12 +249,13 @@
 
 							try {
 								$db = getDB();
-								$statement = $db->prepare("SELECT * FROM scan WHERE name = '$deviceID' ORDER BY date DESC");
+								$statement = $db->prepare("SELECT * FROM scan WHERE name = '$deviceID' ORDER BY date ASC");
 								$statement->execute();
 								foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 									echo "<tr>";
 									echo "<td>".getSingleValue('firewall','id',$row['department'],'name')."</td>";
 									echo "<td>".$row['date']."</td>";
+									echo "<td>".getSingleValue("users","id",$row['uid'],"name")."</td>";
 									echo "</tr>";
 								}
 
@@ -268,6 +266,45 @@
 							?>
 						</tbody>
 					</table>
+						<div class="text-center">
+							<h2>Historia statusów:</h2>
+						</div> 
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th>Data</th>
+									<th>Status</th>
+									<th>Użytkownik</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+
+								try {
+									$db = getDB();
+									$statement = $db->prepare("SELECT * FROM status WHERE name = '$deviceID' ORDER BY date ASC");
+									$statement->execute();
+									$tempC = 1;
+									foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+										echo "<tr>";
+										echo "<td>".$row['date']."</td>";
+										if ($tempC == 1) {
+											echo "<td>Dodany/Sprawny</td>";
+										} else {
+											echo "<td>".$statuses[$row['status']]."</td>";
+										}
+										echo "<td>".getSingleValue("users","id",$row['uid'],"name")."</td>";
+										echo "</tr>";
+										$tempC++;
+									}
+
+
+								} catch(PDOException $e) {
+									echo $e->getMessage();
+								}
+								?>
+							</tbody>
+						</table>
 				</div>
 					<?php
 							}
