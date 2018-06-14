@@ -12,7 +12,7 @@
 		$reportSend = true;
 
 	}
-
+	$csvStr = '';
 
 ?>  
 <!DOCTYPE html>
@@ -109,6 +109,7 @@
 				if(isset($reportSend)) {
 
 			?> 
+			<p><a href="csv/report-csv.php">Pobierz raport csv</a></p>
 			<div class="table-responsive">
 				<table class="table table-bordered">
 					<thead>
@@ -123,10 +124,15 @@
 								}
 								$statement->execute();
 								$depart = [];
+
+								$csvStr = '[["Urządzenie"';
 								foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $fw) {
 									echo "<th colspan='2' title='".$fw['name']."'>".$fw['tag']."</th>";
 									$depart[] = $fw['id'];
+									$temp = $fw['name'];
+									$csvStr .= ',"'.$temp.'",""';
 								}
+								$csvStr .= ']';
 							?>
 
 						</tr>
@@ -138,6 +144,8 @@
 
 							$statement->execute();
 							foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+								$tempName = $row['name'];
+								$csvStr .= ',["'.$tempName.'"';
 								echo "<tr>";
 								echo "<th title='".$row['name']."'>".$row['name']."</th>";
 								$name = '%'.$row["tag"].'%';
@@ -189,25 +197,62 @@
 											else $class = "equal";
 											echo "<td class='".$class."' title='Liczba urządzeń'>".$count."</td>";
 											echo "<td class='".$class."' title='Liczba stanowisk'>".$stand."</td>";
+											$csvStr .= ',"'.$count.'","'.$stand.'"';
 										} else {
 											echo "<td colspan='2'>".$count."</td>";
+											$csvStr .= ',"'.$count.'","0"';
 										}
 									}
 								}
 								echo "</tr>";
+								$csvStr .= ']';
 							}
 						} catch(PDOException $e) {
 							echo $e->getMessage();
 						}
+						$csvStr .= '];';
 						?>
 					</tbody>
 				</table>
 			</div>
 			<?php
 				}
+			echo $csvStr;
 			?>
 		</div><!-- /.container -->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script>
+			var data = <?php echo $csvStr; ?>
+
+			var csvContent = '';
+			data.forEach(function(infoArray, index) {
+				dataString = infoArray.join(';');
+				csvContent += index < data.length ? dataString + '\n' : dataString;
+			});
+
+			var download = function(content, fileName, mimeType) {
+				var a = document.createElement('a');
+				mimeType = mimeType || 'application/octet-stream';
+
+				if (navigator.msSaveBlob) { // IE10
+					navigator.msSaveBlob(new Blob([content], {
+						type: mimeType
+					}), fileName);
+				} else if (URL && 'download' in a) { //html5 A[download]
+					a.href = URL.createObjectURL(new Blob([content], {
+						type: mimeType
+					}));
+					a.setAttribute('download', fileName);
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+				} else {
+					location.href = 'data:application/octet-stream,' + encodeURIComponent(content); // only this mime type is supported
+				}
+			}
+
+			//download(csvContent, 'dowload.csv', 'text/csv;encoding:utf-8');
+		</script>
 	</body>
 </html>
