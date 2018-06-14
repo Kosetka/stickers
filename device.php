@@ -165,9 +165,17 @@
 							$q = $db->query("SELECT date FROM scan WHERE name='$deviceID' ORDER BY date DESC LIMIT 1");
 							$f = $q->fetch();
 							$res = $f["date"];
+							$q = $db->query("SELECT uid FROM scan WHERE name='$deviceID' AND date = '$res' ORDER BY date DESC LIMIT 1");
+							$f = $q->fetch();
+							$res2 = getSingleValue("users","id",$f["uid"],"name");
+							$q = $db->query("SELECT uid FROM status WHERE name='$deviceID' ORDER BY date ASC LIMIT 1");
+							$f = $q->fetch();
+							$res3 = getSingleValue("users","id",$f["uid"],"name");
 						?>
 						<h2>Ostatnie skanowanie: <?php echo $depName;?></h2>
 						<h4>Data: <?php echo $res; ?></h4>
+						<h4>Skanujący: <?php echo $res2; ?></h4>
+						<h4>Dodał: <?php echo $res3; ?></h4>
 						<h2>Dodaj komentarz:</h2>
 						<?php 
 							if(isset($message2)) {  
