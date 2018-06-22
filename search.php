@@ -21,13 +21,15 @@
 		$count = $statement->rowCount();  
 		if($count > 0) {
 			foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+				
+				
 				$devTag[] = $row['name'];
 				if(!in_array(substr(strtoupper($row['name']),0,2),$devTagUnique)) {
 					$devTagUnique[] = substr(strtoupper($row['name']),0,2);
 				}
 			}
-			
 		}
+		
 		
 		
 	}

@@ -172,11 +172,13 @@ if($departID<>null) {
 				$q->execute();
 				$f = $q->fetch();
 				$result = $f["id"];
+				echo $result."->".$val."->";
 				if(getDep($row["name"])<>$result) {
 					$taken[$i]["wrong"] = true;
 				} else {
 					$taken[$i]["wrong"] = false;
 				}
+				echo $row["name"]."->".getDep($row["name"])."<br>";
 				$taken[$i]["vncs"] = $row["value"];
 				$q = $db->prepare("SELECT * FROM firewall WHERE listening_from <= '$val' AND listening_to >= '$val'");
 				$q->execute();

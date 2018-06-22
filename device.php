@@ -32,7 +32,7 @@
 						$iID = substr($deviceID, 2);     // wycina dwie pierwsze
 						$gID = substr($deviceID, 0, 2);  // zwraca dwie pierwsze
 						if(tagExists($gID)) {
-							if(isset($_POST["commSend"])) {
+							if(isset($_POST["commSend"]) && $_POST["comment"]<>"") {
 								$today = date("Y-m-d H:i:s");
 								$uid = getSingleValue("users","username",$_SESSION["username"],"id");
 								$content = secure($_POST["comment"]);
@@ -58,7 +58,7 @@
 									"did" => $deviceID,
 									"department" => $departmentSelected
 								));
-								$message2 = showMessage(0,"Komentarz został dodany.");
+								$message2 = showMessage(0," Komentarz został dodany.");
 								unset($_POST["commSend"]);
 							}
 							if(!deviceExists($gID, true) && !isset($_POST['editSend'])) { 	 // nie ma takiego tagu sprzetu
@@ -105,7 +105,7 @@
 											"department" => $departmentSelected
 										));
 										
-										$message = showMessage(0,"Dane zostały zapisane.");
+										$message = showMessage(0," Dane zostały zapisane.");
 									} elseif(isset($_POST['statusSend'])) {
 										$db = getDB();
 										$userID = getSingleValue("users","username",$_SESSION["username"],"id");
@@ -127,7 +127,7 @@
 											"did" => $deviceID,
 											"department" => $departmentSelected
 										));
-										$message = showMessage(0,"Status został zmieniony pomyślnie.");
+										$message = showMessage(0," Status został zmieniony pomyślnie.");
 									}
 									if($iID=="") {
 										//redirect('home.php');
@@ -158,6 +158,32 @@
 					<div class="col-sm-8">
 						<?php 
 							$db = getDB();
+							if(isset($_GET["sid"])) {
+								$tempsid = $_GET["sid"];
+								$tempid = $_GET["id"];
+								
+								$q = $db->query("SELECT * FROM scan WHERE id = '$tempsid' AND name = '$tempid' LIMIT 1");
+								$f = $q->fetch();
+								$tempres = 'id=>'.$f["id"].';ip=>'.$f["ip"].';name=>'.$f["name"].';date=>'.$f["date"].';uid=>'.$f["uid"].';department=>'.$f["department"];
+								$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+								$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+								$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+
+								$del = $db->prepare("DELETE FROM scan WHERE id = '$tempsid' AND name = '$tempid' LIMIT 1");
+								$del->execute();
+								$tempcount = $del->rowCount();
+								if($tempcount>0) {
+									$statement->execute(array(
+										"uid" => $userID,
+										"aid" => 8,
+										"result" => $tempres,
+										"date" => $today,
+										"ip" => $ip,
+										"did" => $tempid,
+										"department" => $departmentSelected
+									));
+								}
+							}
 							$q = $db->query("SELECT department FROM scan WHERE name='$deviceID' ORDER BY date DESC LIMIT 1");
 							$f = $q->fetch();
 							$res = $f["department"];
@@ -203,6 +229,44 @@
 						<div class="col-sm-12" style="text-align: left;">
 							<?php
 								$db = getDB();
+								
+								if(isset($_GET["kid"])) {
+									$tempsid = $_GET["kid"];
+									$tempid = $_GET["id"];
+
+									$q = $db->query("SELECT * FROM comments WHERE id = '$tempsid' AND did = '$tempid' LIMIT 1");
+									$f = $q->fetch();
+									$tempres = 'id=>'.$f["id"].';did=>'.$f["did"].';uid=>'.$f["uid"].';date=>'.$f["date"].';content=>'.$f["content"].';link=>'.$f["link"];
+									$userID = getSingleValue("users","username",$_SESSION["username"],"id");
+									$ip = isset($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$_SERVER['REMOTE_ADDR'];
+									$statement = $db->prepare("INSERT INTO logs(uid, aid, result, date, ip, did, department) VALUES(:uid, :aid, :result, :date, :ip, :did, :department)");
+
+									$del = $db->prepare("DELETE FROM comments WHERE id = '$tempsid' AND did = '$tempid' LIMIT 1");
+									$del->execute();
+									$tempcount = $del->rowCount();
+									if($tempcount>0) {
+										$statement->execute(array(
+											"uid" => $userID,
+											"aid" => 8,
+											"result" => $tempres,
+											"date" => $today,
+											"ip" => $ip,
+											"did" => $tempid,
+											"department" => $departmentSelected
+										));
+									}
+								}
+								if(isset($_GET["kid"])) {
+									if ($tempcount == 0) {
+										echo showMessage(1,' Usunięcie komentarza niepomyślne.'); 
+									} elseif ($tempcount == 1) {
+										echo showMessage(0,' Pomyślnie usunięto komentarz.');
+									} else {
+										echo showMessage(2,' Co tu się stało.');
+									}
+								}
+								
+								
 								$stmt = $db->prepare("SELECT * FROM comments WHERE did = :did ORDER BY date DESC");
 								$stmt->bindParam(':did',$deviceID); 
 								$stmt->execute();
@@ -211,9 +275,18 @@
 									$user = getSingleValue("users","id",$comm["uid"],"name");
 									echo '<div class="col-sm-12">
 													<div class="panel panel-default">
-														<div class="panel-heading">
-															<strong>'.$user.'</strong> <span class="text-muted">Data: '.$comm["date"].'</span>
-														</div>
+														<div class="panel-heading" style="display: flex;">
+															<div class="col-sm-8">
+																<strong>'.$user.'</strong> <span class="text-muted">Data: '.$comm["date"].'</span>
+															</div>';
+									$access = getSingleValue("users","username",$_SESSION["username"],"access");
+									$tempuid = getSingleValue("users","username",$_SESSION["username"],"id");
+									if($comm["uid"]==$tempuid || $access==9) {
+										echo "				<div class='col-sm-4' style='text-align: right;'>
+																<a style='color: black !important;' href='device.php?id=".$deviceID."&kid=".$comm['id']."' title='Usuń komentarz'><span class='glyphicon glyphicon-trash'></span></a>
+															</div>";
+									}
+									echo '					</div>
 														<div class="panel-body">
 															'.secure($comm["content"]).'
 														</div>';
@@ -236,12 +309,26 @@
 					<div class="text-center">
 						<h2>Historia skanowania:</h2>
 					</div> 
+					<div class="col-sm-12" style="text-align: left;">
+					<?php 
+						if(isset($_GET["sid"])) {
+							if ($tempcount == 0) {
+								echo showMessage(1,' Usunięcie skanowanie niepomyślne.'); 
+							} elseif ($tempcount == 1) {
+								echo showMessage(0,' Pomyślnie usunięto skanowanie.<br>');
+							} else {
+								echo showMessage(2,' Co tu się stało.');
+							}
+						}
+					?>
+					</div>
 					<table class="table table-bordered">
 						<thead>
 							<tr>
 								<th>Oddział</th>
 								<th>Data</th>
 								<th>Użytkownik</th>
+								<th>Akcje</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -256,6 +343,12 @@
 									echo "<td>".getSingleValue('firewall','id',$row['department'],'name')."</td>";
 									echo "<td>".$row['date']."</td>";
 									echo "<td>".getSingleValue("users","id",$row['uid'],"name")."</td>";
+									$access = getSingleValue("users","username",$_SESSION["username"],"access");
+									if ($access >= 5) { 
+										echo "<td><a href='device.php?id=".$deviceID."&sid=".$row['id']."' title='Usuń skanowanie'><span class='glyphicon glyphicon-trash'></span></a></td>"; 
+									} else {
+										echo "<td></td>";
+									}
 									echo "</tr>";
 								}
 

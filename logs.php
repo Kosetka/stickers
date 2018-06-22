@@ -70,7 +70,7 @@ if(isset($_POST["dateSend"])) {
 				echo '<pre style="max-height: 500px;">';
 				$statement = $db->prepare("SELECT * FROM logs WHERE date >= '$dstart' AND date <= '$dend' ORDER BY date DESC");
 				$statement->execute();
-				$action = [1=>"Skanowanie", 2=>"Dodanie/edycja urządzenia", 3=>"Zmiana statusu", 4=>"Dodanie typu urządzenia", 5=>"Dodanie komentarza", 6=>"Dodanie pola urządzenia", 7=>"Edycja pola urządzenia"];
+				$action = [1=>"Skanowanie", 2=>"Dodanie/edycja urządzenia", 3=>"Zmiana statusu", 4=>"Dodanie typu urządzenia", 5=>"Dodanie komentarza", 6=>"Dodanie pola urządzenia", 7=>"Edycja pola urządzenia", 8=>"Usunięcie skanowania"];
 				foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 					echo $row["date"].' ('.$users[$row["uid"]].') Urządzenie: '.$row["did"].' : '.$action[$row["aid"]].' - '.$row["result"].' : '.$departments[$row["department"]].' : '.$row["ip"].'<br>';
 

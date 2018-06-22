@@ -16,7 +16,7 @@
 				<a class="navbar-brand" href="home.php">VC</a>
 				<form class="searchRWD" action="device.php">
 					<div class="input-group">
-						<input type="text" style="text-transform: uppercase;" class="form-control" placeholder="Szukaj..." name="id">
+						<input type="text" style="text-transform: uppercase;" class="form-control" placeholder="Szukaj..." name="id" autocomplete="off">
 						<div class="input-group-btn">
 							<button class="btn btn-default" type="submit">
 								<i class="glyphicon glyphicon-search"></i>

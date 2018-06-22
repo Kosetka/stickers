@@ -104,7 +104,7 @@
 					<div class="form-group">
 						<label class="control-label col-sm-offset-1 col-sm-4" for="name">Nazwa:</label>
 						<div class="col-sm-3">          
-							<input type="text" class="form-control" style="text-transform: uppercase;" id="name" placeholder="" name="name" maxlength="32" required autofocus>
+							<input type="text" class="form-control" style="text-transform: uppercase;" id="name" placeholder="" name="name" maxlength="32" required autofocus autocomplete="off">
 						</div>
 					</div>
 					<div class="form-group">        

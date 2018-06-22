@@ -140,7 +140,7 @@
         switch ($id) {
             case 0:
                 $alert = "success";
-                $glyph = "success";
+                $glyph = "ok";
                 break;
             case 1:
                 $alert = "danger";
