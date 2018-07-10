@@ -74,6 +74,9 @@
 										foreach($_POST as $key => $value) {
 											if($key<>"editSend") {
 												$db = getDB();
+												if(substr($key, 2)=="pracownik") {
+													$value = strtoupper($value);
+												}
 												$statement = $db->prepare("INSERT INTO fieldvalue(name, fieldname, value, date) VALUES(:name, :fieldname, :value, :date)");
 												$statement->execute(array(
 													"name" => $deviceID,
@@ -328,7 +331,7 @@
 								<th>Oddział</th>
 								<th>Data</th>
 								<th>Użytkownik</th>
-								<th>Akcje</th>
+								<th>Akcje</th> 
 							</tr>
 						</thead>
 						<tbody>

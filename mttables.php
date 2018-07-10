@@ -69,7 +69,7 @@ if($departID<>null) {
 			$i++;
 		}
 	} else {
-
+ 
 
 		$statement = $db->prepare("SELECT DISTINCT(name) FROM fieldvalue WHERE fieldname LIKE 'MT%' ORDER BY name ASC");
 		$statement->execute();

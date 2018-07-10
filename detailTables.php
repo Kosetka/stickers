@@ -79,6 +79,9 @@ if($departID <> null) {
 							$statement2->execute();
 							$f = $statement2->fetch();
 							$result = $f['value'];
+							if(substr($a, 2)=="pracownik" || substr($a, 2)=="serial" || substr($a, 2)=="mac") {
+								$result = strtoupper($result);	
+							}
 							echo '<td>'.$result.'</td>';
 						}
 						$q = $db->prepare("SELECT status FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");
@@ -182,6 +185,9 @@ if($departID <> null) {
 						$statement2->execute();
 						$f = $statement2->fetch();
 						$result = $f['value'];
+						if(substr($a, 2)=="pracownik" || substr($a, 2)=="serial" || substr($a, 2)=="mac") {
+							$result = strtoupper($result);	
+						}
 						echo '<td>'.$result.'</td>';
 					}
 					$q = $db->prepare("SELECT status FROM status WHERE name = :name ORDER BY date DESC LIMIT 1");

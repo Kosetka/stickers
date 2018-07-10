@@ -6,7 +6,7 @@
 
 	if(isset($_POST['depSend'])) {
 		$department = $_POST['department'];
-	}
+	} 
 ?>  
 <!DOCTYPE html>
 <html lang="pl">

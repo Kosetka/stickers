@@ -78,7 +78,7 @@
 					<h4>Skróty oddziałów:</h4>
 					<table class="table table-bordered">
 						<thead></thead>
-						<tbody>
+						<tbody> 
 						<?php
 							$db = getDB();
 							$statement = $db->prepare("SELECT * FROM firewall");
