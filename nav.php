@@ -64,6 +64,7 @@
 						<li><a href="search.php">Wyszukiwanie zaawansownane</a></li>
 						<li><a href="logs.php">Logi aktywności</a></li>
 						<li><a href="scanlogs.php">Logi skanowania</a></li>
+						<li><a href="stickerspool.php">Wolne numery naklejek</a></li>
 					</ul>
 				</li>
 				<li class="dropdown">
