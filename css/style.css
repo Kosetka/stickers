@@ -187,3 +187,10 @@ table a {
 		left: 40%;
 	}
 }
+.custom-center thead tr th, .custom-center tbody tr td{
+	text-align: center;
+	vertical-align: middle;
+}
+.custom-center thead tr th {
+	background-color: #e0e0e0;
+}

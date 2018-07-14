@@ -28,6 +28,7 @@
 					if(isset($_GET['id']) && !empty($_GET['id'])) {
 					echo '<div class="col-sm-4">';
 						$deviceID = secure($_GET['id']);
+						$deviceID = str_replace(' ','',$deviceID);
                         $deviceID = strtoupper($deviceID);
 						$iID = substr($deviceID, 2);     // wycina dwie pierwsze
 						$gID = substr($deviceID, 0, 2);  // zwraca dwie pierwsze
@@ -325,7 +326,7 @@
 						}
 					?>
 					</div>
-					<table class="table table-bordered">
+					<table class="table table-bordered custom-center">
 						<thead>
 							<tr>
 								<th>Oddział</th>
@@ -365,7 +366,7 @@
 						<div class="text-center">
 							<h2>Historia statusów:</h2>
 						</div> 
-						<table class="table table-bordered">
+						<table class="table table-bordered custom-center">
 							<thead>
 								<tr>
 									<th>Data</th>
@@ -394,6 +395,131 @@
 										$tempC++;
 									}
 
+
+								} catch(PDOException $e) {
+									echo $e->getMessage();
+								}
+								?>
+							</tbody>
+						</table>
+						<div class="text-center">
+							<h2>Historia edycji urządzenia:</h2>
+						</div> 
+						<table class="table table-bordered custom-center">
+							<thead>
+								<tr>
+									<th rowspan="2">Data edycji</th>
+									<th colspan="3">Status</th>
+									<th rowspan="2">Użytkownik</th>
+								</tr>
+								<tr>
+									<td>Pole</td>
+									<td>Przed zmianą</td>
+									<td>Po zmianie</td>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+
+								try {
+									$db = getDB();
+								
+									$fieldNames = [];
+									$fieldNamesFull = [];
+									$dates = [];
+									$data = [];
+									
+									$statement = $db->prepare("SELECT DISTINCT fieldname FROM fieldvalue WHERE name = '$deviceID'");
+									$statement->execute();
+									foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+										$fieldNames[] = $row["fieldname"];
+									}
+									$tag = substr($deviceID,0,2);
+									$statement = $db->prepare("SELECT name, title FROM fields WHERE name LIKE '$tag%'");
+									$statement->execute();
+									foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+										$fieldNamesFull[$row["name"]] = $row["title"];
+									}
+									
+									$statement = $db->prepare("SELECT DISTINCT date FROM fieldvalue WHERE name = '$deviceID' ORDER BY date DESC");
+									$statement->execute();
+									foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+										$dates[] = $row["date"];
+									}
+									$firstRow = true;
+									
+									$dateCount = 0;
+									$totalFields = count($fieldNames);
+									if(count($dates)>1) {
+										foreach($dates as $date) {
+											$firstRow = true;
+											$tempRows = 0;
+											$statement = $db->prepare("SELECT * FROM fieldvalue WHERE name = '$deviceID' AND date = '$date'");
+											$statement->execute();
+											foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
+												$data[$dateCount][$tempRows] = $row['value'];
+												$tempRows++;
+												/*echo "<tr>";
+												if($firstRow) {
+													echo "<td rowspan='$totalFields'>$date</td>";
+												}
+												echo "<td>".$fieldNamesFull[$fieldNames[$tempRows-1]]."</td>";
+												echo "<td>".$row['value']."</td>";
+												echo "<td>".$row['value']."</td>";
+												if($firstRow) {
+													echo "<td rowspan='$totalFields'>Użytkownik</td>";
+													$firstRow = false;
+												}
+												echo "</tr>";*/
+											}
+											/*for($i=$tempRows;$tempRows<$totalFields;$i++) {
+												echo "<tr><td>".$fieldNamesFull[$fieldNames[$i]]."</td><td></td><td></td></tr>";
+												$tempRows++;
+											}*/
+											$dateCount++;
+										}
+										for($i=1;$i<count($data);$i++) {
+											$firstRow = true;
+											$tempRows = 0;
+											$showed = false;
+											for($j=0;$j<count($data[$i]);$j++) {
+												echo "<tr>";
+												$tempRows++;
+												if($firstRow) {
+													echo "<td rowspan='$totalFields'>".$dates[$i-1]."</td>";
+												}
+												if($data[$i-1][$j]<>$data[$i][$j]) {
+													echo "<td>".$fieldNamesFull[$fieldNames[$j]]."</td>";
+													echo "<td>".$data[$i][$j]."</td>";
+													echo "<td>".$data[$i-1][$j]."</td>";
+												} else {
+													if(!$showed) {
+														echo "<td style='margin: 0 !important; padding: 0 !important;'></td><td style='margin: 0 !important; padding: 0 !important;'></td><td style='margin: 0 !important; padding: 0 !important;'></td>";
+														$showed = true;
+													}
+												}
+												if($firstRow) {
+													echo "<td rowspan='$totalFields'>".getSingleValue('users','id',getSingleValue('logs','date',$dates[$i-1],'uid'),'name')."</td>";
+													$firstRow = false;
+												}
+												echo "</tr>";
+												//echo $data[$i][$j];
+												//echo $data[$i-1][$j];
+											}
+											for($k=$tempRows;$k<count($data[$i-1]);$k++) {
+												echo "<tr><td>".$fieldNamesFull[$fieldNames[$k]]."</td><td></td><td>".$data[$i-1][$j]."</td></tr>";
+												$tempRows++;
+											}
+											
+										}
+										//echo "<pre>";
+										//print_r($data);
+										//echo "</pre>";
+										
+										
+									}
+									
+									
 
 								} catch(PDOException $e) {
 									echo $e->getMessage();
